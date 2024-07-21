@@ -3,6 +3,10 @@
 # Contact: (pkw21@uclive.ac.nz)
 
 ui <- fluidPage(
+    
+    theme = bslib::bs_theme(version=5, bootswatch = "materia"),
+    
+    # --- HEADER
     tags$head(tags$title("DATA423 Assignment")),
     HTML("
     <div style='display: flex; justify-content: space-between; align-items: center;'>
@@ -13,7 +17,16 @@ ui <- fluidPage(
     </div>
     "),
     
-    # Sidebar with input file selection
+    # --- NAVBAR (TOP)
+    navbarPage(
+        title = "Demo Navbar",
+        tabPanel("Quickview"),
+        tabPanel("Dashboard"),
+        tabPanel("Options"),
+        tabPanel("About")
+    ),
+
+    # --- SIDEBAR (LEFT)
     sidebarLayout(
         sidebarPanel(
             fileInput("file1", "Choose CSV File", #+ file1
@@ -34,5 +47,10 @@ ui <- fluidPage(
                 tabPanel("Pairs Plot")
             )
         )
-    )
+    ),
+    
+    # tags$footer(
+    #     style = "position: fixed; bottom: 0; left: 0; width: 100%; background-color: #f5f5f5; text-align: center; padding: 5px; font-size: 0.8em;",
+    #     HTML("© Kane Williams")
+    # )
 )
