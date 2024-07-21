@@ -29,7 +29,9 @@ ui <- fluidPage(
         mainPanel(
             tabsetPanel(
                 tabPanel("Summary", verbatimTextOutput("summary")), #- summary
-                tabPanel("Plot", plotOutput("plot")) #- plot
+                tabPanel("Plot", plotOutput("plot")), #- plot
+                tabPanel("Missingness"),
+                tabPanel("Pairs Plot")
             )
         )
     )

@@ -4,11 +4,11 @@
 
 server <- function(input, output, session) {
   
+# --- List Suggested CSV Files ---
     csv_files <- reactive({
       list.files(pattern = "\\.csv$", recursive = TRUE)
     })
     
-    # List Suggested Files
     output$recommended_files <- renderUI({ #- recommended_files
       files <- csv_files()
       if (length(files) > 0) {
@@ -25,27 +25,12 @@ server <- function(input, output, session) {
         tags$p("No CSV files found in the current directory.")
       }
     })
+
+# --- Changing CSV File Logic --- 
     
-    # Read CSV file
-    data <- reactive({
-      selected <- selected_file()
-      
-      if (!is.null(selected)) {
-        if (file.exists(selected)) {
-          read.csv(selected, header = TRUE)
-        } else {
-          NULL
-        }
-      } else if (!is.null(input$file1$datapath)) {
-        read.csv(input$file1$datapath, header = TRUE)
-      } else {
-        NULL
-      }
-    })
-    
-  
     selected_file <- reactiveVal(NULL)
     
+    # Suggested File Selected
     observeEvent(csv_files(), {
       lapply(csv_files(), function(file) {
         observeEvent(input[[paste0("file_", gsub("[^a-zA-Z0-9]", "_", file))]], {
@@ -53,13 +38,24 @@ server <- function(input, output, session) {
         })
       })
     })
-  
+    
+    # Manually File Selected
     observeEvent(input$file1, {
       if (!is.null(input$file1$datapath)) {
         selected_file(input$file1$datapath)
       }
     })
     
+    # Read CSV file
+    data <- reactive({
+      selected <- selected_file()
+      
+      if (!is.null(selected) && file.exists(selected)) {
+        read.csv(selected, header = TRUE)
+      } else {
+        NULL
+      }
+    })
     
 # --- Main Panel Outputs ---
     
