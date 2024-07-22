@@ -7,6 +7,8 @@ library(shiny)
 library(dplyr)
 library(ggplot2)
 
+library(DT) # Data Tables
+
 library(thematic) # for plot colours
 library(ragg) # for fonts
 library(bslib) # for themes.

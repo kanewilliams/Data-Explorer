@@ -4,11 +4,14 @@
 
 server <- function(input, output, session) {
   
-# --- List Suggested CSV Files ---
+### QUICK VIEW ###
+  
+    # --- SIDEBAR (LEFT): CSV File Logic ---
     csv_files <- reactive({
       list.files(pattern = "\\.csv$", recursive = TRUE)
     })
     
+    # Display Suggested Files
     output$recommended_files <- renderUI({ #- recommended_files
       files <- csv_files()
       if (length(files) > 0) {
@@ -25,8 +28,6 @@ server <- function(input, output, session) {
         tags$p("No CSV files found in the current directory.")
       }
     })
-
-# --- Changing CSV File Logic --- 
     
     selected_file <- reactiveVal(NULL)
     
@@ -39,7 +40,7 @@ server <- function(input, output, session) {
       })
     })
     
-    # Manually File Selected
+    # Manual File Selected
     observeEvent(input$file1, {
       if (!is.null(input$file1$datapath)) {
         selected_file(input$file1$datapath)
@@ -57,7 +58,7 @@ server <- function(input, output, session) {
       }
     })
     
-# --- Main Panel Outputs ---
+    # --- MAIN PANEL (RIGHT) ---
     
     output$summary <- renderPrint({ #+ summary
       data <- data()
@@ -67,13 +68,100 @@ server <- function(input, output, session) {
       summary(data)
     })
     
-    output$plot <- renderPlot({ #+ plot
-        data <- data() 
-        if (is.null(data)) {
-            return(NULL)
-        }
+    output$data_table <- DT::renderDataTable({ #+- data_table
+      data <- data()
+      if (is.null(data)) {
+        # TODO return proper error message
+        return("No data loaded. Please select or upload a CSV file.")
+      }
+      
+      DT::datatable(data = data,
+                    options = list(searching = TRUE,
+                                   pageLength = 10,
+                                   lengthMenu = c(5, 10, 100),
+                                   ordering = input$Order
+                    ),
+                    # Clickable Rows
+                    extensions = list(Responsive = TRUE)
+      )
+    })
+    
+    ### ABOUT ###    
+    
+    output$about_page <- renderUI({
+      fluidPage(
+        tags$head(
+          tags$style(HTML("
+        .centered-title { text-align: center; margin-bottom: 30px; }
+        .content-section { margin-bottom: 20px; }
+      "))
+        ),
         
-        # TODO update
-        hist(data$Y, main = "Histogram of data$Y", xlab = "Value")
+        div(class = "centered-title",
+            h1("About Data Explorer")
+        ),
+        
+        fluidRow(
+          column(8,
+                 div(class = "content-section",
+                     h3("Purpose"),
+                     p("Data Explorer is a web application designed for quickly exploring CSV datasets, made entirely in R shiny."),
+                     p("It provides various tools for data visualization, summary statistics, and exploratory data analysis, and was created as part of a project for a course (DATA423: Data Science in Industry) at the University of Canterbury, New Zealand."),
+                     p("For more information and to view the source code, visit the ", 
+                       a("GitHub repository", href = "https://github.com/kanewilliams/Data-Explorer", target = "_blank"), ".")
+                 ),
+                 fluidRow(
+                   column(6,
+                          div(class = "content-section",
+                              h3("Features"),
+                              tags$ul(
+                                tags$li("Automatic CSV detection"),
+                                tags$li("Interactive data tables"),
+                                tags$li("Missing value analysis"),
+                                tags$li("Various data visualisations")
+                              )
+                          )
+                   ),
+                   column(6,
+                          div(class = "content-section",
+                              h3("How to Use"),
+                              tags$ol(
+                                tags$li("Upload a CSV file using the file input on the Quickview page."),
+                                tags$li("Navigate through different tabs to explore various aspects of your data."),
+                                tags$li("Use interactive features to customize your analysis.")
+                              )
+                          )
+                   )
+                 )
+          ),
+          column(4,
+                 div(class = "content-section",
+                     h3("Developer Information"),
+                     p(strong("Name:"), "Kane Williams"),
+                     p(strong("Contact:"), a("pkw21@uclive.ac.nz", href="mailto:pkw21@uclive.ac.nz"))
+                 ),
+                 div(class = "content-section",
+                     h3("Acknowledgements"),
+                     p("Special thanks to the University of Canterbury and the DATA423 course instructors for their guidance and support.")
+                 ),
+                 div(class = "content-section",
+                     h3("Technologies Used"),
+                     tags$ul(
+                       tags$li("R"),
+                       tags$li("Shiny"),
+                       tags$li("Various R packages (e.g. thematic, ragg, DT, ggplot2, dplyr)")
+                     )
+                 )
+          )
+        ),
+        
+        hr(),
+        
+        fluidRow(
+          column(12,
+                 p(em("© 2024 Kane Williams. All rights reserved."))
+          )
+        )
+      )
     })
 }

@@ -4,7 +4,7 @@
 
 ui <- fluidPage(
     
-    theme = bslib::bs_theme(version=5, bootswatch = "materia"),
+    theme = bslib::bs_theme(version=5, bootswatch = "spacelab"),
     
     # --- HEADER
     tags$head(tags$title("DATA423 Assignment")),
@@ -13,41 +13,58 @@ ui <- fluidPage(
         <div>
             <h2 style='margin: 1;'>Data Explorer<sup>©</sup></h2>
         </div>
-        <h3 style='margin: 1;'>Kane Williams [<i>pkw21@uclive.ac.nz</i>]</h3>
+        <h3 style='margin: 1;'>Kane Williams [<i>xxxxx@uclive.ac.nz</i>]</h3>
     </div>
     "),
     
     # --- NAVBAR (TOP)
     navbarPage(
-        title = "Demo Navbar",
-        tabPanel("Quickview"),
-        tabPanel("Dashboard"),
-        tabPanel("Options"),
-        tabPanel("About")
+        title = "",
+        tabPanel("Quickview",
+                 
+                 # --- SIDEBAR (LEFT)
+                 sidebarLayout(
+                     sidebarPanel(
+                         fileInput("file1", "Choose CSV File", #+ file1
+                                   accept = c("text/csv",
+                                              "text/comma-separated-values",
+                                              "text/plain",
+                                              ".csv")),
+                         tags$p("Suggestions:"),
+                         uiOutput("recommended_files") #- recommended_files
+                     ),
+                     
+                     # --- MAIN PANEL (RIGHT)
+                     mainPanel(
+                         tabsetPanel(
+                             tabPanel("Summary", verbatimTextOutput("summary")), #- summary
+                             tabPanel("Data Table", DT::dataTableOutput(outputId = "data_table")), #- data_table
+                             tabPanel("Null-Count"),
+                             tabPanel("Vis_Miss")
+                         )
+                     )
+                 ),
+                 
+                 ),
+        tabPanel("Missing Values"),
+        tabPanel("Similarities"),
+        tabPanel("Distributions"),
+        tabPanel("Relationships"),
+        navbarMenu("More", 
+            tabPanel("Options",
+                     
+                     verbatimTextOutput("options_page") #- options
+                     
+                     ),
+            tabPanel("About",
+                     
+                     uiOutput("about_page") #- about
+                     
+                     )
+            )
     ),
 
-    # --- SIDEBAR (LEFT)
-    sidebarLayout(
-        sidebarPanel(
-            fileInput("file1", "Choose CSV File", #+ file1
-                      accept = c("text/csv",
-                                 "text/comma-separated-values",
-                                 "text/plain",
-                                 ".csv")),
-            tags$p("Suggestions:"),
-            uiOutput("recommended_files") #- recommended_files
-        ),
-        
-        # Main panel for displaying summaries and plots
-        mainPanel(
-            tabsetPanel(
-                tabPanel("Summary", verbatimTextOutput("summary")), #- summary
-                tabPanel("Plot", plotOutput("plot")), #- plot
-                tabPanel("Missingness"),
-                tabPanel("Pairs Plot")
-            )
-        )
-    ),
+
     
     # tags$footer(
     #     style = "position: fixed; bottom: 0; left: 0; width: 100%; background-color: #f5f5f5; text-align: center; padding: 5px; font-size: 0.8em;",
