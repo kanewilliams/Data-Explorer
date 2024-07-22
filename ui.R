@@ -61,7 +61,11 @@ ui <- fluidPage(
                      uiOutput("about_page") #- about
                      
                      )
-            )
+            ),
+        nav_spacer(),
+        # nav_item(
+        #     input_dark_mode(id = "dark_mode", mode = "light")
+        # )
     ),
 
 

@@ -103,15 +103,16 @@ server <- function(input, output, session) {
       "))
         ),
         
-        h2("Options (TODO)", align = "center"),
+        h2("Options (experimental)", align = "center"),
         
         fluidRow(
           column(6, offset = 3,
                  div(class = "centered-content",
                      div(class = "options-section",
                          div(class = "option-item",
-                             checkboxInput("dark_mode", "Enable Dark Mode", value = FALSE)
+                             checkboxInput("dark_mode", "Enable Dark Mode (experimental)", value = FALSE)
                          ),
+                         input_dark_mode(id = "dark_mode", mode = "light"),
                          div(class = "option-item",
                              selectInput("theme_color", "Theme Color", 
                                          choices = c("Default", "Blue", "Green", "Purple", "Orange"))
@@ -186,7 +187,8 @@ server <- function(input, output, session) {
                  ),
                  div(class = "content-section",
                      h3("Acknowledgements"),
-                     p("Special thanks to the University of Canterbury and the DATA423 course instructors for their guidance and support.")
+                     p("Special thanks to the University of Canterbury and the DATA423 course instructors for their guidance and support."),
+                     p("Some code (particularly for the visualisations) was modified from code provided in the course. (Authors: Nick Ward, Phil Davies, Nicki Cartlidge)")
                  ),
                  div(class = "content-section",
                      h3("Technologies Used"),
