@@ -85,9 +85,52 @@ server <- function(input, output, session) {
                     extensions = list(Responsive = TRUE)
       )
     })
+    ### OPTIONS ###
+    
+    output$options_page <- renderUI({
+      fluidPage(
+        tags$head(
+          tags$style(HTML("
+        .options-section { margin-bottom: 30px; }
+        .option-item { margin-bottom: 15px; }
+        .centered-content {
+          max-width: 500px;
+          margin: 0 auto;
+        }
+        .btn-block {
+          width: 100%;
+        }
+      "))
+        ),
+        
+        h2("Options (TODO)", align = "center"),
+        
+        fluidRow(
+          column(6, offset = 3,
+                 div(class = "centered-content",
+                     div(class = "options-section",
+                         div(class = "option-item",
+                             checkboxInput("dark_mode", "Enable Dark Mode", value = FALSE)
+                         ),
+                         div(class = "option-item",
+                             selectInput("theme_color", "Theme Color", 
+                                         choices = c("Default", "Blue", "Green", "Purple", "Orange"))
+                         ),
+                         div(class = "option-item",
+                             sliderInput("font_size", "Font Size", min = 12, max = 24, value = 16, step = 1)
+                         )
+                     ),
+                     actionButton("save_options", "Save Options", class = "btn-primary btn-block")
+                 )
+          )
+        )
+      )
+    })
+    
     
     ### ABOUT ###    
     
+    # --- Title ---
     output$about_page <- renderUI({
       fluidPage(
         tags$head(
@@ -101,6 +144,7 @@ server <- function(input, output, session) {
             h1("About Data Explorer")
         ),
         
+    # --- Main Content ---
         fluidRow(
           column(8,
                  div(class = "content-section",

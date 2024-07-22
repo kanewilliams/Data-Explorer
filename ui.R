@@ -53,7 +53,7 @@ ui <- fluidPage(
         navbarMenu("More", 
             tabPanel("Options",
                      
-                     verbatimTextOutput("options_page") #- options
+                     uiOutput("options_page") #- options
                      
                      ),
             tabPanel("About",
