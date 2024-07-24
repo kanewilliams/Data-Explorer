@@ -79,10 +79,11 @@ server <- function(input, output, session) {
                     options = list(searching = TRUE,
                                    pageLength = 10,
                                    lengthMenu = c(5, 10, 100),
-                                   ordering = input$Order
+                                   ordering = input$Order,
+                                   scrollX = TRUE
                     ),
                     # Clickable Rows
-                    extensions = list(Responsive = TRUE)
+                    #extensions = list(Responsive = TRUE)
       )
     })
     ### OPTIONS ###
@@ -110,7 +111,7 @@ server <- function(input, output, session) {
                  div(class = "centered-content",
                      div(class = "options-section",
                          div(class = "option-item",
-                             checkboxInput("dark_mode", "Enable Dark Mode (experimental)", value = FALSE)
+                             checkboxInput("dark_mode", "Enable Dark Mode (click icon below)", value = FALSE)
                          ),
                          input_dark_mode(id = "dark_mode", mode = "light"),
                          div(class = "option-item",

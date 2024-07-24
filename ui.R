@@ -20,7 +20,7 @@ ui <- fluidPage(
     # --- NAVBAR (TOP)
     navbarPage(
         title = "",
-        tabPanel("Quickview",
+        tabPanel("Quickview", # --- QUICKVIEW
                  
                  # --- SIDEBAR (LEFT)
                  sidebarLayout(
@@ -38,18 +38,70 @@ ui <- fluidPage(
                      mainPanel(
                          tabsetPanel(
                              tabPanel("Summary", verbatimTextOutput("summary")), #- summary
-                             tabPanel("Data Table", DT::dataTableOutput(outputId = "data_table")), #- data_table
-                             tabPanel("Null-Count"),
-                             tabPanel("Vis_Miss")
+                             tabPanel("Data Table", DT::dataTableOutput(outputId = "data_table")) #- data_table
                          )
                      )
                  ),
+        ),
+        tabPanel("Missing Values", # --- MISSING VALUES
                  
+                 sidebarLayout(
+                     sidebarPanel(
+                         actionButton("TEST", "placeholder TEST")
+                     ),
+                     mainPanel(
+                         tabsetPanel(
+                             tabPanel("Null Count"),
+                             tabPanel("Vis_Miss Plot"),
+                             tabPanel("Upset Chart"),
+                             tabPanel("Rising-Value Chart")
+                         )
+                     ),
                  ),
-        tabPanel("Missing Values"),
-        tabPanel("Similarities"),
-        tabPanel("Distributions"),
-        tabPanel("Relationships"),
+        ),
+        tabPanel("Similarities",
+        
+                sidebarLayout(
+                    sidebarPanel(
+                        actionButton("TEST2", "placeholder TEST3")
+                    ),
+                    mainPanel(
+                        tabsetPanel(
+                            tabPanel("Corrgram"),
+                            tabPanel("Hierarchy Chart"),
+                        )
+                    ),
+                ),
+        ),
+        tabPanel("Distributions",
+                 
+                 sidebarLayout(
+                     sidebarPanel(
+                         actionButton("TEST3", "placeholder TEST3")
+                     ),
+                     mainPanel(
+                         tabsetPanel(
+                             tabPanel("Box Plot"),
+                             tabPanel("Histogram"),
+                         )
+                     ),
+                 ),
+        ),
+        tabPanel("Relationships",
+                 
+                 sidebarLayout(
+                     sidebarPanel(
+                         actionButton("TEST4", "placeholder TEST4")
+                     ),
+                     mainPanel(
+                         tabsetPanel(
+                             tabPanel("Scatter Plot"),
+                             tabPanel("Pair Plot"),
+                             tabPanel("Mosaic Plot"),
+                         )
+                     ),
+                 ),
+        ),
         navbarMenu("More", 
             tabPanel("Options",
                      
