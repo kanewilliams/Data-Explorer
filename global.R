@@ -6,8 +6,11 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
+#library(plotly) # Interactivity
 
 library(DT) # Data Tables
+library(visdat) # Vis-miss plot
+library(UpSetR) # Upset chart
 
 library(thematic) # for plot colours
 library(ragg) # for fonts

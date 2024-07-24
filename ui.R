@@ -47,14 +47,38 @@ ui <- fluidPage(
                  
                  sidebarLayout(
                      sidebarPanel(
-                         actionButton("TEST", "placeholder TEST")
+                         conditionalPanel(
+                             condition = "input.missingValuesTabset == 'Vis-Miss Plot'",
+                             selectInput("vis_miss_portion", "Display Portion", 
+                                         choices = c("All Data" = "all",
+                                                     "First Half (Columns)" = "first_half",
+                                                     "Second Half (Columns)" = "second_half")),
+                             selectInput("vis_miss_color", "Color Scheme", 
+                                         choices = c("Default" = "default",
+                                                     "Vibrant" = "qual",
+                                                     "Colourblind Safe" = "cb_safe")),
+                             checkboxInput("vis_miss_sort", "Sort by Missing", value = TRUE)
+
+                         ),
+                         conditionalPanel(
+                             condition = "input.missingValuesTabset == 'Null Count'",
+                             # Add controls for Null Count plot here
+                         ),
+                         conditionalPanel(
+                             condition = "input.missingValuesTabset == 'Upset Chart'",
+                             # Add controls for Upset Chart here
+                         ),
+                         conditionalPanel(
+                             condition = "input.missingValuesTabset == 'Rising-Value Chart'",
+                             # Add controls for Rising-Value Chart here
+                         )
                      ),
                      mainPanel(
-                         tabsetPanel(
-                             tabPanel("Null Count"),
-                             tabPanel("Vis_Miss Plot"),
+                         tabsetPanel(id = "missingValuesTabset",
+                             tabPanel("Vis-Miss Plot", plotOutput("vis_miss_plot")),
                              tabPanel("Upset Chart"),
-                             tabPanel("Rising-Value Chart")
+                             tabPanel("Rising-Value Chart"),
+                             tabPanel("Null Count"),
                          )
                      ),
                  ),

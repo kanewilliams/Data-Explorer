@@ -52,7 +52,7 @@ server <- function(input, output, session) {
       selected <- selected_file()
       
       if (!is.null(selected) && file.exists(selected)) {
-        read.csv(selected, header = TRUE)
+        read.csv(selected, header = TRUE,  stringsAsFactors=TRUE)
       } else {
         NULL
       }
@@ -86,7 +86,21 @@ server <- function(input, output, session) {
                     #extensions = list(Responsive = TRUE)
       )
     })
-    ### OPTIONS ###
+
+### MISSING VALUES ###
+    
+    output$vis_miss_plot <- renderPlot({
+      req(data())
+      data_to_plot <- switch(input$vis_miss_portion,
+                             "all" = data(),
+                             "first_half" = data() %>% select(1:(ncol(.)/2)),
+                             "second_half" = data() %>% select((ncol(.)/2 + 1):ncol(.))
+      )
+      vis_dat(data_to_plot, palette = input$vis_miss_color,
+              sort_type = input$vis_miss_sort)
+    })
+    
+### OPTIONS ###
     
     output$options_page <- renderUI({
       fluidPage(
@@ -130,7 +144,7 @@ server <- function(input, output, session) {
     })
     
     
-    ### ABOUT ###    
+### ABOUT ###    
     
     # --- Title ---
     output$about_page <- renderUI({
