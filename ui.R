@@ -74,14 +74,22 @@ ui <- fluidPage(
                          ),
                          conditionalPanel(
                              condition = "input.missingValuesTabset == 'Rising-Value Chart'",
-                             # Add controls for Rising-Value Chart here
+                             div(style = "max-height: 400px; overflow-y: auto; column-count: 3; column-gap: 20px;",
+                                 checkboxGroupInput("rising_value_vars", "Select Variables:", 
+                                                    choices = NULL,
+                                                    selected = NULL)
+                             ),
+                             checkboxInput("rising_value_scale", "Scale Variables", value = TRUE),
+                             checkboxInput("rising_value_center", "Center Variables", value = TRUE),
+                             actionButton("select_all_rising_value", "Select All"),
+                             actionButton("deselect_all_rising_value", "Deselect All")
                          )
                      ),
                      mainPanel(
                          tabsetPanel(id = "missingValuesTabset",
                              tabPanel("Vis-Miss Plot", plotOutput("vis_miss_plot", height = "calc(100vh - 100px)")),
                              tabPanel("Upset Chart", plotOutput("upset_chart", height = "calc(100vh - 100px)")),
-                             tabPanel("Rising-Value Chart"),
+                             tabPanel("Rising-Value Chart", plotOutput("rising_value_chart", height = "calc(100vh - 100px)")),
                              tabPanel("Null Count"),
                          )
                      ),

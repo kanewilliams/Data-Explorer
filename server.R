@@ -94,7 +94,7 @@ server <- function(input, output, session) {
       req(data())
       data_to_plot <- switch(input$vis_miss_portion,
                              "all" = data(),
-                             "first_half" = data() %>% select(1:(ncol(.)/3)),
+                             "first_half" = data() %>% select(1:(ncol(.)/3)), # TODO FIX: BROKEN
                              "second_half" = data() %>% select((ncol(.)/2 + 1):ncol(.))
       )
       vis_dat(data_to_plot, palette = input$vis_miss_color,
@@ -128,6 +128,47 @@ server <- function(input, output, session) {
             sets.bar.color = "darkred",
             matrix.color = "black",
             shade.color = "lightgray")
+    })
+    
+    ### -- Rising Value Chart
+    # NOTE: Works only on CONTINUOUS COLUMNS
+    output$rising_value_chart <- renderPlot({
+      req(data())
+      
+      data <- data()[, sapply(data(), function(col) is.numeric(col))] # select numeric
+      for (col in 1:ncol(data)) {
+        data[,col] <- data[order(data[,col]),col, drop = FALSE] #sort each column in ascending order
+      }
+      
+      data_filtered <- data[, input$rising_value_vars, drop = FALSE] # choose columns by rising_value_var
+      
+      data <- scale(x = data_filtered, center = input$rising_value_center, scale = input$rising_value_scale)
+      mypalette <- rainbow(ncol(data))
+      matplot(x = seq(1, 100, length.out = nrow(data)), y = data, type = "l", xlab = "Percentile (%)", ylab = "Standardised Values", lty = 1, lwd = 1, col = mypalette, main = "Rising value chart")
+      legend(legend = colnames(data), x = "topleft", y = "top", lty = 1, lwd = 1, col = mypalette, ncol = round(ncol(data)^0.3))
+    })
+    
+    # Automatically update groupcheckbox for column selection
+    observe({
+      req(data())
+      numeric_cols <- names(data()[, sapply(data(), is.numeric), drop = FALSE])
+      updateCheckboxGroupInput(session, "rising_value_vars", 
+                               choices = numeric_cols,
+                               selected = numeric_cols
+                               )
+    })
+    
+    # Select All button functionality
+    observeEvent(input$select_all_rising_value, {
+      numeric_cols <- names(data()[, sapply(data(), is.numeric), drop = FALSE])
+      updateCheckboxGroupInput(session, "rising_value_vars", 
+                               selected = numeric_cols)
+    })
+    
+    # Deselect All button functionality
+    observeEvent(input$deselect_all_rising_value, {
+      updateCheckboxGroupInput(session, "rising_value_vars", 
+                               selected = character(0))
     })
     
 ### OPTIONS ###
