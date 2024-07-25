@@ -89,7 +89,7 @@ server <- function(input, output, session) {
 
 ### MISSING VALUES ###
     
-    ### --- Vis_Miss Plot
+      ### --- Vis_Miss Plot
     output$vis_miss_plot <- renderPlot({
       req(data())
       data_to_plot <- switch(input$vis_miss_portion,
@@ -101,7 +101,7 @@ server <- function(input, output, session) {
               sort_type = input$vis_miss_sort)
     })
     
-    ### --- Upset Chart
+      ### --- Upset Chart
     output$upset_chart <- renderPlot({
       req(data())
       
@@ -130,7 +130,7 @@ server <- function(input, output, session) {
             shade.color = "lightgray")
     })
     
-    ### -- Rising Value Chart
+      ### -- Rising Value Chart
     # NOTE: Works only on CONTINUOUS COLUMNS
     output$rising_value_chart <- renderPlot({
       req(data())
@@ -148,7 +148,17 @@ server <- function(input, output, session) {
       legend(legend = colnames(data), x = "topleft", y = "top", lty = 1, lwd = 1, col = mypalette, ncol = round(ncol(data)^0.3))
     })
     
-    # Automatically update groupcheckbox for column selection
+    # Update selected variables based on percentage slider
+    observeEvent(input$rising_value_percent, {
+      req(data())
+      numeric_cols <- names(data()[, sapply(data(), is.numeric), drop = FALSE])
+      num_to_select <- ceiling(length(numeric_cols) * input$rising_value_percent / 100)
+      selected_cols <- numeric_cols[1:num_to_select]
+      updateCheckboxGroupInput(session, "rising_value_vars", 
+                               selected = selected_cols)
+    })
+    
+    # Update group check box based on availability columns (on data load)
     observe({
       req(data())
       numeric_cols <- names(data()[, sapply(data(), is.numeric), drop = FALSE])

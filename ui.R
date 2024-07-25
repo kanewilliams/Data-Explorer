@@ -74,6 +74,8 @@ ui <- fluidPage(
                          ),
                          conditionalPanel(
                              condition = "input.missingValuesTabset == 'Rising-Value Chart'",
+                             sliderInput("rising_value_percent", "Select Percentage of Variables:", 
+                                         min = 0, max = 100, value = 100, step = 10),
                              div(style = "max-height: 400px; overflow-y: auto; column-count: 3; column-gap: 20px;",
                                  checkboxGroupInput("rising_value_vars", "Select Variables:", 
                                                     choices = NULL,
