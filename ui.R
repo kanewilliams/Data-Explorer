@@ -89,9 +89,9 @@ ui <- fluidPage(
                      ),
                      mainPanel(
                          tabsetPanel(id = "missingValuesTabset",
-                             tabPanel("Vis-Miss Plot", plotOutput("vis_miss_plot", height = "calc(100vh - 100px)")),
-                             tabPanel("Upset Chart", plotOutput("upset_chart", height = "calc(100vh - 100px)")),
-                             tabPanel("Rising-Value Chart", plotOutput("rising_value_chart", height = "calc(100vh - 100px)")),
+                             tabPanel("Vis-Miss Plot", plotOutput("vis_miss_plot", height = "calc(100vh - 200px)")),
+                             tabPanel("Upset Chart", plotOutput("upset_chart", height = "calc(100vh - 200px)")),
+                             tabPanel("Rising-Value Chart", plotOutput("rising_value_chart", height = "calc(100vh - 200px)")),
                              tabPanel("Null Count"),
                          )
                      ),
