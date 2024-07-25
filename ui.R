@@ -66,7 +66,11 @@ ui <- fluidPage(
                          ),
                          conditionalPanel(
                              condition = "input.missingValuesTabset == 'Upset Chart'",
-                             # Add controls for Upset Chart here
+                             sliderInput("upset_nintersects", "Number of Intersections", 
+                                         min = 1, max = 50, value = 10),
+                             sliderInput("upset_nsets", "Number of Sets", 
+                                         min = 1, max = 20, value = 5),
+                             checkboxInput("upset_order_by", "Order by Intersection Size", value = TRUE)
                          ),
                          conditionalPanel(
                              condition = "input.missingValuesTabset == 'Rising-Value Chart'",
@@ -75,8 +79,8 @@ ui <- fluidPage(
                      ),
                      mainPanel(
                          tabsetPanel(id = "missingValuesTabset",
-                             tabPanel("Vis-Miss Plot", plotOutput("vis_miss_plot")),
-                             tabPanel("Upset Chart"),
+                             tabPanel("Vis-Miss Plot", plotOutput("vis_miss_plot", height = "calc(100vh - 100px)")),
+                             tabPanel("Upset Chart", plotOutput("upset_chart", height = "calc(100vh - 100px)")),
                              tabPanel("Rising-Value Chart"),
                              tabPanel("Null Count"),
                          )

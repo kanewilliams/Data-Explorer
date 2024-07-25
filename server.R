@@ -89,15 +89,45 @@ server <- function(input, output, session) {
 
 ### MISSING VALUES ###
     
+    ### --- Vis_Miss Plot
     output$vis_miss_plot <- renderPlot({
       req(data())
       data_to_plot <- switch(input$vis_miss_portion,
                              "all" = data(),
-                             "first_half" = data() %>% select(1:(ncol(.)/2)),
+                             "first_half" = data() %>% select(1:(ncol(.)/3)),
                              "second_half" = data() %>% select((ncol(.)/2 + 1):ncol(.))
       )
       vis_dat(data_to_plot, palette = input$vis_miss_color,
               sort_type = input$vis_miss_sort)
+    })
+    
+    ### --- Upset Chart
+    output$upset_chart <- renderPlot({
+      req(data())
+      
+      # Create a list of sets, where each set contains row indices of missing values
+      missing_sets <- lapply(names(data()), function(col) {
+        which(is.na(data()[[col]]))
+      })
+      names(missing_sets) <- names(data())
+      
+      # Filter out sets (variables) with no missing values
+      missing_sets <- missing_sets[sapply(missing_sets, length) > 0]
+      
+      # Ensure we have at least two sets with missing values
+      if(length(missing_sets) < 2) {
+        return(plot.new() + 
+                 text(0.5, 0.5, "Not enough variables with missing values for an UpSet plot"))
+      }
+      
+      upset(fromList(missing_sets), 
+            nsets = min(input$upset_nsets, length(missing_sets)),
+            nintersects = input$upset_nintersects,
+            order.by = if(input$upset_order_by) "freq" else "degree",
+            main.bar.color = "darkblue",
+            sets.bar.color = "darkred",
+            matrix.color = "black",
+            shade.color = "lightgray")
     })
     
 ### OPTIONS ###
