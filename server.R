@@ -94,11 +94,22 @@ server <- function(input, output, session) {
       req(data())
       data_to_plot <- switch(input$vis_miss_portion,
                              "all" = data(),
-                             "first_half" = data() %>% select(1:(ncol(.)/3)), # TODO FIX: BROKEN
-                             "second_half" = data() %>% select((ncol(.)/2 + 1):ncol(.))
+                             "first_half" = data() %>% select(1:floor(ncol(.)/2)),
+                             "second_half" = data() %>% select((floor(ncol(.)/2) + 1):ncol(.))
       )
-      vis_dat(data_to_plot, palette = input$vis_miss_color,
-              sort_type = input$vis_miss_sort)
+      
+      vis_miss(data_to_plot, 
+               sort_miss = input$vis_miss_sort, 
+               cluster = input$vis_miss_cluster) +
+        
+        # Make axes Visible
+        theme(
+          axis.text.x = element_text(size = 12, angle = 90, hjust = 1, vjust = 0.5),
+          axis.text.y = element_text(size = 12),
+          #axis.title.x = element_text(size = 14),
+          axis.title.y = element_text(size = 14),
+          #plot.title = element_text(size = 16)
+        )
     })
     
       ### --- Upset Chart
@@ -132,6 +143,7 @@ server <- function(input, output, session) {
     
       ### -- Rising Value Chart
     # NOTE: Works only on CONTINUOUS COLUMNS
+    
     output$rising_value_chart <- renderPlot({
       req(data())
       
@@ -146,6 +158,15 @@ server <- function(input, output, session) {
       mypalette <- rainbow(ncol(data))
       matplot(x = seq(1, 100, length.out = nrow(data)), y = data, type = "l", xlab = "Percentile (%)", ylab = "Standardised Values", lty = 1, lwd = 1, col = mypalette, main = "Rising value chart")
       legend(legend = colnames(data), x = "topleft", y = "top", lty = 1, lwd = 1, col = mypalette, ncol = round(ncol(data)^0.3))
+    })
+    
+    # Update facet_by choices
+    observe({
+      req(data())
+      categorical_cols <- names(data())[sapply(data(), function(x) is.factor(x) || (is.numeric(x) && length(unique(x)) <= 10))]
+      updateSelectInput(session, "facet_by", 
+                        choices = c("None", categorical_cols),
+                        selected = "None")
     })
     
     # Update selected variables based on percentage slider

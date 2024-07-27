@@ -6,7 +6,7 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
-#library(plotly) # Interactivity
+library(plotly) # Interactivity
 
 library(DT) # Data Tables
 library(visdat) # Vis-miss plot
