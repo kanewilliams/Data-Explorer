@@ -86,6 +86,16 @@ server <- function(input, output, session) {
                     #extensions = list(Responsive = TRUE)
       )
     })
+    
+    output$dfsummary <- renderPrint({ #+ dfsummary
+      data <- data()
+      if (is.null(data)) {
+        return("No data loaded. Please select or upload a CSV file.")
+      }
+      data %>%
+        summarytools::dfSummary(col.widths = c(10,80,150,120,120,180,220)) %>% 
+        summarytools::view(, method = "render", headings = FALSE, bootstrap.css = FALSE)
+    })
 
 ### MISSING VALUES ###
     
@@ -102,7 +112,7 @@ server <- function(input, output, session) {
                sort_miss = input$vis_miss_sort, 
                cluster = input$vis_miss_cluster) +
         
-        # Make axes Visible
+        # Make axes labels larger
         theme(
           axis.text.x = element_text(size = 12, angle = 90, hjust = 1, vjust = 0.5),
           axis.text.y = element_text(size = 12),

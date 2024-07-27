@@ -38,7 +38,8 @@ ui <- fluidPage(
                      mainPanel(
                          tabsetPanel(
                              tabPanel("Summary", verbatimTextOutput("summary")), #- summary
-                             tabPanel("Data Table", DT::dataTableOutput(outputId = "data_table")) #- data_table
+                             tabPanel("Data Table", DT::dataTableOutput(outputId = "data_table")), #- data_table
+                             tabPanel("dfSummary", htmlOutput(outputId = "dfsummary")) #- data_table
                          )
                      )
                  ),

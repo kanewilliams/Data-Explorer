@@ -9,6 +9,7 @@ library(ggplot2)
 library(plotly) # Interactivity
 
 library(DT) # Data Tables
+library(summarytools) # dfsummary
 library(visdat) # Vis-miss plot
 library(UpSetR) # Upset chart
 
