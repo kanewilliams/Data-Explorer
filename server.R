@@ -51,7 +51,7 @@ server <- function(input, output, session) {
       }
     })
     
-    # Read CSV file
+    # Read CSV file after Selection
     observeEvent(selected_file(), {
       selected <- selected_file()
       
@@ -74,16 +74,25 @@ server <- function(input, output, session) {
       req(data())
       
       script <- readLines(input$cleaning_script$datapath)
+      comments <- script[grepl("^#", script)] # Find comments in .clean
+      comments <- gsub("^#\\s*", "", comments)  # Remove leading '#'
       
-      # Create env for cleaning actions
+      # Create env$data as temporary
       env <- new.env()
       env$data <- data()
       
-      # Runs actions in new env
+      # Clean env$data
       tryCatch({
         eval(parse(text = script), envir = env)
-        data(env$data)  # Update the reactive value with cleaned data
+        data(env$data)  # Update Data
         showNotification("Cleaning script applied successfully", type = "message")
+        
+        output$cleaning_info <- renderUI({
+          tagList(
+            h4("Applied Cleaning Actions:"),
+            tags$pre(paste(comments, collapse = "\n"))
+          )
+        })
 
       }, error = function(e) {
         showNotification(paste("Error in cleaning script:", e$message), type = "error")
@@ -361,6 +370,7 @@ server <- function(input, output, session) {
                               h3("How to Use"),
                               tags$ol(
                                 tags$li("Upload a CSV file using the file input on the Quickview page."),
+                                tags$li("Apply optional cleaning of the data by uploading a .clean file."),
                                 tags$li("Navigate through different tabs to explore various aspects of your data."),
                                 tags$li("Use interactive features to customize your analysis.")
                               )

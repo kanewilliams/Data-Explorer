@@ -42,6 +42,7 @@ ui <- fluidPage(
                                        accept = c("text/r",
                                                   "text/plain",
                                                   ".r", ".R", ".clean")),
+                             uiOutput("cleaning_info"),
                          )
                      ),
                      
