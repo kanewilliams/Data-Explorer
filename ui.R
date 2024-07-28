@@ -63,10 +63,6 @@ ui <- fluidPage(
 
                          ),
                          conditionalPanel(
-                             condition = "input.missingValuesTabset == 'Null Count'",
-                             # Add controls for Null Count plot here
-                         ),
-                         conditionalPanel(
                              condition = "input.missingValuesTabset == 'Upset Chart'",
                              sliderInput("upset_nintersects", "Number of Intersections", 
                                          min = 1, max = 50, value = 10),
@@ -104,21 +100,26 @@ ui <- fluidPage(
                      ),
                  ),
         ),
-        tabPanel("Similarities",
+        tabPanel("Similarities", # --- SIMILARITIES
         
                 sidebarLayout(
                     sidebarPanel(
-                        actionButton("TEST2", "placeholder TEST3")
+                        conditionalPanel(
+                            condition = "input.similaritiesTabset == 'Corrgram'",
+                            checkboxInput(inputId = "corr_abs", label = "Uses absolute correlation", value = TRUE),
+                            selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
+                            selectInput(inputId = "corr_group_method", label = "Grouping method", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                            ),
                     ),
                     mainPanel(
-                        tabsetPanel(
-                            tabPanel("Corrgram"),
+                        tabsetPanel(id = "similaritiesTabset",
+                            tabPanel("Corrgram", withSpinner(plotOutput("corrgram_plot"))),
                             tabPanel("Hierarchy Chart"),
                         )
                     ),
                 ),
         ),
-        tabPanel("Distributions",
+        tabPanel("Distributions", # --- DISTRIBUTIONS
                  
                  sidebarLayout(
                      sidebarPanel(
@@ -132,7 +133,7 @@ ui <- fluidPage(
                      ),
                  ),
         ),
-        tabPanel("Relationships",
+        tabPanel("Relationships", # --- RELATIONSHIPS
                  
                  sidebarLayout(
                      sidebarPanel(

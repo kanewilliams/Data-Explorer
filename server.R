@@ -231,6 +231,27 @@ server <- function(input, output, session) {
       "This table provides a quick, simple overview of missing value counts."
     })
     
+### SIMILARITIES ###
+    
+    ### --- Corrgram
+    output$corrgram_plot <- renderPlot({
+      req(data())
+      data <- data()[, sapply(data(), function(col) is.numeric(col))] # select numeric
+      corrgram(data, 
+                 order = input$corr_group_method, 
+                 abs = input$corr_abs, 
+                 cor.method = input$corr_method,
+                 #text.panel = panel.txt,
+                 main = "Corrgram")
+    })
+    
+    ### --- Hiearchy_Chart
+    output$hierarchy_chart <- renderPlot({
+      req(data())
+      # TODO
+    })
+    
+    
 ### OPTIONS ###
     
     output$options_page <- renderUI({

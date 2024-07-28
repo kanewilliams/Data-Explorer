@@ -9,10 +9,16 @@ library(ggplot2)
 #library(plotly) # Interactivity
 library(shinycssloaders) # spinner
 
+### QUICK VIEW ###
 library(DT) # Data Tables
 library(summarytools) # dfsummary
+
+### MISSING VALUES ###
 library(visdat) # Vis-miss plot
 library(UpSetR) # Upset chart
+
+### SIMILARITIES
+library(corrgram) # Corrgram Plot
 
 library(thematic) # for plot colours
 library(ragg) # for fonts
