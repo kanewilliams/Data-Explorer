@@ -182,15 +182,19 @@ server <- function(input, output, session) {
             shade.color = "lightgray")
     })
     
-      ### -- Rising Value Chart
-    # NOTE: Works only on CONTINUOUS COLUMNS
+    ### -- Rising Value Chart
+    # NOTE: Works only on CONTINUOUS features
     
     output$rising_value_chart <- renderPlot({
       req(data())
       
-      data <- data()[, sapply(data(), function(col) is.numeric(col))] # select numeric
+      # Selects Numeric features
+      data <- data()[, sapply(data(), function(col) {
+                  is.numeric(col)
+              })]
+      
       for (col in 1:ncol(data)) {
-        data[,col] <- data[order(data[,col]),col, drop = FALSE] #sort each column in ascending order
+        data[,col] <- data[order(data[,col]),col, drop = FALSE] # sort each column in ascending order
       }
       
       data_filtered <- data[, input$rising_value_vars, drop = FALSE] # choose columns by rising_value_var
