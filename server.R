@@ -30,12 +30,14 @@ server <- function(input, output, session) {
     })
     
     selected_file <- reactiveVal(NULL)
+    file_uploaded <- reactiveVal(FALSE)
     
     # Suggested File Selected
     observeEvent(csv_files(), {
       lapply(csv_files(), function(file) {
         observeEvent(input[[paste0("file_", gsub("[^a-zA-Z0-9]", "_", file))]], {
           selected_file(file)
+          file_uploaded(TRUE)
         })
       })
     })
@@ -44,6 +46,7 @@ server <- function(input, output, session) {
     observeEvent(input$file1, {
       if (!is.null(input$file1$datapath)) {
         selected_file(input$file1$datapath)
+        file_uploaded(TRUE)
       }
     })
     
@@ -56,6 +59,40 @@ server <- function(input, output, session) {
       } else {
         NULL
       }
+    })
+    
+    # Show Cleaning Box when file Uploaded
+    output$file_uploaded <- reactive({
+      file_uploaded()
+    })
+    outputOptions(output, "file_uploaded", suspendWhenHidden = FALSE)
+    
+    # Handle the cleaning script
+    observeEvent(input$cleaning_script, {
+      req(input$cleaning_script)
+      req(data())
+      
+      script <- readLines(input$cleaning_script$datapath)
+      
+      # Create env for cleaning actions
+      env <- new.env()
+      env$data <- data()
+      
+      # Runs actions in new env
+      tryCatch({
+        eval(parse(text = script), envir = env)
+        
+        # Check if the script modified the 'data' object
+        if (exists("data", envir = env)) {
+          cleaned_data <- env$data
+          data(cleaned_data)  # Update the reactive value with cleaned data
+          showNotification("Cleaning script applied successfully", type = "message")
+        } else {
+          showNotification("Cleaning script did not modify the data", type = "warning")
+        }
+      }, error = function(e) {
+        showNotification(paste("Error in cleaning script:", e$message), type = "error")
+      })
     })
     
     # --- MAIN PANEL (RIGHT) ---

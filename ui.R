@@ -25,13 +25,24 @@ ui <- fluidPage(
                  # --- SIDEBAR (LEFT)
                  sidebarLayout(
                      sidebarPanel(
-                         fileInput("file1", "Choose CSV File", #+ file1
-                                   accept = c("text/csv",
-                                              "text/comma-separated-values",
-                                              "text/plain",
-                                              ".csv")),
-                         tags$p("Suggestions:"),
-                         uiOutput("recommended_files") #- recommended_files
+                         wellPanel(
+                             fileInput("file1", "Choose CSV File", #+ file1
+                                       accept = c("text/csv",
+                                                  "text/comma-separated-values",
+                                                  "text/plain",
+                                                  ".csv")),
+                             tags$p("Suggestions:"),
+                             uiOutput("recommended_files"), #- recommended_files
+                         ),
+                         
+                         # CLEAN CSV
+                         conditionalPanel(
+                             condition = "output.file_uploaded",
+                             fileInput("cleaning_script", "Upload Cleaning Script",
+                                       accept = c("text/r",
+                                                  "text/plain",
+                                                  ".r", ".R", ".clean")),
+                         )
                      ),
                      
                      # --- MAIN PANEL (RIGHT)
