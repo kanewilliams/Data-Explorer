@@ -37,9 +37,9 @@ ui <- fluidPage(
                      # --- MAIN PANEL (RIGHT)
                      mainPanel(
                          tabsetPanel(
-                             tabPanel("Summary", verbatimTextOutput("summary")), #- summary
-                             tabPanel("Data Table", DT::dataTableOutput(outputId = "data_table")), #- data_table
-                             tabPanel("dfSummary", htmlOutput(outputId = "dfsummary")) #- data_table
+                             tabPanel("Summary", withSpinner(verbatimTextOutput("summary"))), #- summary
+                             tabPanel("Data Table", withSpinner(dataTableOutput(outputId = "data_table"))), #- data_table
+                             tabPanel("dfSummary", withSpinner(htmlOutput(outputId = "dfsummary"))) #- data_table
                          )
                      )
                  ),
@@ -88,14 +88,18 @@ ui <- fluidPage(
                              checkboxInput("rising_value_center", "Center Variables", value = TRUE),
                              actionButton("select_all_rising_value", "Select All"),
                              actionButton("deselect_all_rising_value", "Deselect All"),
+                         ),
+                         conditionalPanel(
+                             condition = "input.missingValuesTabset == 'Null Count'",
+                             verbatimTextOutput("description_null_count")
                          )
                      ),
                      mainPanel(
                          tabsetPanel(id = "missingValuesTabset",
-                             tabPanel("Vis-Miss Plot", plotOutput("vis_miss_plot", height = "calc(100vh - 150px)")),
-                             tabPanel("Upset Chart", plotOutput("upset_chart", height = "calc(100vh - 150px)")),
-                             tabPanel("Rising-Value Chart", plotOutput("rising_value_chart", height = "calc(100vh - 150px)")),
-                             tabPanel("Null Count"),
+                             tabPanel("Vis-Miss Plot", withSpinner(plotOutput("vis_miss_plot", height = "calc(100vh - 150px)"))),
+                             tabPanel("Upset Chart", withSpinner(plotOutput("upset_chart", height = "calc(100vh - 150px)"))),
+                             tabPanel("Rising-Value Chart", withSpinner(plotOutput("rising_value_chart", height = "calc(100vh - 150px)"))),
+                             tabPanel("Null Count", withSpinner(tableOutput("null_count_table"))),
                          )
                      ),
                  ),

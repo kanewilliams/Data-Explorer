@@ -212,6 +212,25 @@ server <- function(input, output, session) {
                                selected = character(0))
     })
     
+    ### --- Null Count
+    null_counts <- reactive({
+      req(data())
+      sapply(data(), function(x) sum(is.na(x)))
+    })
+    
+    output$null_count_table <- renderTable({
+      counts <- null_counts()
+      data.frame(
+        Variable = names(counts),
+        'Missing Values' = counts,
+        check.names = FALSE
+      )
+    })
+    
+    output$description_null_count <- renderText({
+      "This table provides a quick, simple overview of missing value counts."
+    })
+    
 ### OPTIONS ###
     
     output$options_page <- renderUI({

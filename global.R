@@ -6,7 +6,8 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
-library(plotly) # Interactivity
+#library(plotly) # Interactivity
+library(shinycssloaders) # spinner
 
 library(DT) # Data Tables
 library(summarytools) # dfsummary
