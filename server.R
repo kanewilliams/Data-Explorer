@@ -31,6 +31,7 @@ server <- function(input, output, session) {
     
     selected_file <- reactiveVal(NULL)
     file_uploaded <- reactiveVal(FALSE)
+    data <- reactiveVal(NULL)
     
     # Suggested File Selected
     observeEvent(csv_files(), {
@@ -51,15 +52,15 @@ server <- function(input, output, session) {
     })
     
     # Read CSV file
-    data <- reactive({
+    observeEvent(selected_file(), {
       selected <- selected_file()
       
       if (!is.null(selected) && file.exists(selected)) {
-        read.csv(selected, header = TRUE,  stringsAsFactors=TRUE)
-      } else {
-        NULL
+        df <- read.csv(selected, header = TRUE, stringsAsFactors=TRUE)
+        data(df)
       }
     })
+    
     
     # Show Cleaning Box when file Uploaded
     output$file_uploaded <- reactive({
@@ -67,7 +68,7 @@ server <- function(input, output, session) {
     })
     outputOptions(output, "file_uploaded", suspendWhenHidden = FALSE)
     
-    # Handle the cleaning script
+    ### - CLEANING
     observeEvent(input$cleaning_script, {
       req(input$cleaning_script)
       req(data())
@@ -81,38 +82,25 @@ server <- function(input, output, session) {
       # Runs actions in new env
       tryCatch({
         eval(parse(text = script), envir = env)
-        
-        # Check if the script modified the 'data' object
-        if (exists("data", envir = env)) {
-          cleaned_data <- env$data
-          data(cleaned_data)  # Update the reactive value with cleaned data
-          showNotification("Cleaning script applied successfully", type = "message")
-        } else {
-          showNotification("Cleaning script did not modify the data", type = "warning")
-        }
+        data(env$data)  # Update the reactive value with cleaned data
+        showNotification("Cleaning script applied successfully", type = "message")
+
       }, error = function(e) {
         showNotification(paste("Error in cleaning script:", e$message), type = "error")
       })
     })
     
+    
     # --- MAIN PANEL (RIGHT) ---
     
     output$summary <- renderPrint({ #+ summary
-      data <- data()
-      if (is.null(data)) {
-        return("No data loaded. Please select or upload a CSV file.")
-      }
-      summary(data)
+      req(data())
+      summary(data())
     })
     
     output$data_table <- DT::renderDataTable({ #+- data_table
-      data <- data()
-      if (is.null(data)) {
-        # TODO return proper error message
-        return("No data loaded. Please select or upload a CSV file.")
-      }
-      
-      DT::datatable(data = data,
+      req(data())
+      DT::datatable(data = data(),
                     options = list(searching = TRUE,
                                    pageLength = 10,
                                    lengthMenu = c(5, 10, 100),
@@ -125,11 +113,8 @@ server <- function(input, output, session) {
     })
     
     output$dfsummary <- renderPrint({ #+ dfsummary
-      data <- data()
-      if (is.null(data)) {
-        return("No data loaded. Please select or upload a CSV file.")
-      }
-      data %>%
+      req(data())
+      data() %>%
         summarytools::dfSummary(col.widths = c(10,80,150,120,120,180,220)) %>% 
         summarytools::view(, method = "render", headings = FALSE, bootstrap.css = FALSE)
     })
