@@ -104,9 +104,9 @@ ui <- fluidPage(
                      ),
                      mainPanel(
                          tabsetPanel(id = "missingValuesTabset",
-                             tabPanel("Vis-Miss Plot", withSpinner(plotOutput("vis_miss_plot", height = "calc(100vh - 150px)"))),
-                             tabPanel("Upset Chart", withSpinner(plotOutput("upset_chart", height = "calc(100vh - 150px)"))),
-                             tabPanel("Rising-Value Chart", withSpinner(plotOutput("rising_value_chart", height = "calc(100vh - 150px)"))),
+                             tabPanel("Vis-Miss Plot", withSpinner(plotOutput("vis_miss_plot", height = "calc(100vh - 200px)"))),
+                             tabPanel("Upset Chart", withSpinner(plotOutput("upset_chart", height = "calc(100vh - 200px)"))),
+                             tabPanel("Rising-Value Chart", withSpinner(plotOutput("rising_value_chart", height = "calc(100vh - 200px)"))),
                              #tabPanel("Null Count", withSpinner(tableOutput("null_count_table"))),
                          )
                      ),
@@ -143,7 +143,7 @@ ui <- fluidPage(
                     
                     mainPanel(
                         tabsetPanel(id = "similaritiesTabset",
-                            tabPanel("Corrgram", withSpinner(plotOutput("corrgram_plot"))),
+                            tabPanel("Corrgram", withSpinner(plotOutput("corrgram_plot", height = "calc(100vh - 200px)"))),
                             tabPanel("Hierarchy Chart (Not Implemented)", withSpinner(verbatimTextOutput("hierarchy_chart"))),
                         )
                     ),

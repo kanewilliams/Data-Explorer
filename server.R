@@ -344,11 +344,18 @@ server <- function(input, output, session) {
         ")"
       )
       
+      num_vars <- ncol(selected_corrgram_data())
+      text_size <- max(0.6, 3 - (num_vars - 5) * 0.05) 
+      
       corrgram(selected_corrgram_data(), 
                order = input$corr_group_method, 
                abs = input$corr_abs, 
                cor.method = input$corr_method,
-               main = corrgram_title)
+               main = corrgram_title,
+               cex.labels = text_size,
+               lower.panel = panel.shade,
+               #upper.panel = panel.pie
+               )
     })
     
     # Select All button functionality
