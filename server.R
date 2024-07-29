@@ -429,9 +429,52 @@ server <- function(input, output, session) {
         id = if (input$boxplot_outliers) list(n = 3, location = "avoid") else FALSE
       )
     })
+    
+    ### --- Histogram
+    output$histogram <- renderText({
+      "Not yet implemented. Come back later."
+    })
       
 ### RELATIONSHIPS ###
     
+    ### --- Time Series Plot
+    
+    ### --- Pairs Plot
+    
+    ### --- Mosaic Plot
+    
+    # Function to get suitable categorical variables
+    get_suitable_vars <- function(data) {
+      categorial_vars <- names(data)[sapply(data, function(x) is.factor(x) | is.character(x))]
+      suitable_vars <- categorial_vars[sapply(data[categorial_vars], function(x) length(unique(x)) <= 10)]
+      return(suitable_vars)
+    }
+    
+    # Update choices for mosaic plot variables
+    observe({
+      req(data())
+      suitable_vars <- get_suitable_vars(data())
+      
+      updateSelectizeInput(session, "mosaic_variables", 
+                           choices = suitable_vars,
+                           selected = sample(suitable_vars, min(3, length(suitable_vars))))
+    })
+    
+    # Render Mosaic Plot
+    output$mosaic_plot <- renderPlot({
+      req(data(), input$mosaic_variables, length(input$mosaic_variables) >= 2)
+      
+      tryCatch({
+        formula <- as.formula(paste("~", paste(input$mosaic_variables, collapse = " + ")))
+        vcd::mosaic(formula, data = data(),
+                    main = "Mosaic Plot", 
+                    shade = TRUE, 
+                    legend = TRUE)
+      }, error = function(e) {
+        plot.new()
+        text(0.5, 0.5, "Unable to create Mosaic Plot with selected variables", cex = 1.2)
+      })
+    })
     
 ### OPTIONS ###
     
@@ -499,7 +542,7 @@ server <- function(input, output, session) {
                  div(class = "content-section",
                      h3("Purpose"),
                      p("Data Explorer is a web application designed for quickly exploring CSV datasets, made entirely in R shiny."),
-                     p("It provides various tools for data visualization, summary statistics, and exploratory data analysis, and was created as part of a project for a course (DATA423: Data Science in Industry) at the University of Canterbury, New Zealand."),
+                     p("It provides various tools for data visualization, summary statistics, and exploratory data analysis, and was inspired by an assignment I had in (DATA423: Data Science in Industry) at the University of Canterbury, New Zealand."),
                      p("For more information and to view the source code, visit the ", 
                        a("GitHub repository", href = "https://github.com/kanewilliams/Data-Explorer", target = "_blank"), ".")
                  ),

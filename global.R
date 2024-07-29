@@ -25,6 +25,9 @@ library(corrgram) # Corrgram Plot
 library(car) # Boxplot
 library(RColorBrewer) # for Boxplot for some reason
 
+### RELATIONSHIPS
+library(vcd) # Mosaic
+
 library(thematic) # for plot colours
 library(ragg) # for fonts
 library(bslib) # for themes.

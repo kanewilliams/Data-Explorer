@@ -175,7 +175,7 @@ ui <- fluidPage(
                      mainPanel(
                          tabsetPanel(id = "distributionsTabset",
                              tabPanel("Box Plot", withSpinner(plotOutput("boxplot", height = "calc(100vh - 200px)"))),
-                             tabPanel("Histogram", withSpinner(plotOutput("histogram", height = "calc(100vh - 200px)"))),
+                             tabPanel("Histogram (Not Implemented)", withSpinner(plotOutput("histogram", height = "calc(100vh - 200px)"))),
                          )
                      ),
                  ),
@@ -191,24 +191,26 @@ ui <- fluidPage(
                              selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
                          ),
                          conditionalPanel(
-                             condition = "input.relationshipsTabset == 'Pair Plot'",
+                             condition = "input.relationshipsTabset == 'Pairs Plot'",
                              checkboxInput(inputId = "corr_abs", label = "PLACEHOLDER", value = TRUE),
                              selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
                              selectInput(inputId = "corr_group_method", label = "PLACEHOLDERA", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
                          ),
                          conditionalPanel(
                              condition = "input.relationshipsTabset == 'Mosaic Plot'",
-                             checkboxInput(inputId = "corr_abs", label = "AAAA", value = TRUE),
-                             selectInput(inputId = "corr_method", label = "PLACEHOLDER", choices = c("pearson","spearman","kendall"), selected = "pearson"),
-                             selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
-                         ),
+                             selectizeInput(inputId = "mosaic_variables", 
+                                            label = "Select variables for Mosaic Plot:", 
+                                            choices = NULL, 
+                                            multiple = TRUE, 
+                                            options = list(maxItems = 4)),
+                             ),
                      ),
                      
                      mainPanel(
                          tabsetPanel(id = "relationshipsTabset",
-                             tabPanel("Time Series Plot"),
-                             tabPanel("Pair Plot"),
-                             tabPanel("Mosaic Plot"),
+                             tabPanel("Time Series Plot", withSpinner(plotOutput("timeseries_plot", height = "calc(100vh - 200px)"))),
+                             tabPanel("Pairs Plot", withSpinner(plotOutput("pairs_plot", height = "calc(100vh - 200px)"))),
+                             tabPanel("Mosaic Plot", withSpinner(plotOutput("mosaic_plot", height = "calc(100vh - 200px)"))),
                          )
                      ),
                  ),
