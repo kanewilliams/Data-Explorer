@@ -74,7 +74,7 @@ ui <- fluidPage(
                              checkboxInput("vis_miss_cluster", "Cluster Missing", value = FALSE)
 
                          ),
-                         conditionalPanel(
+                         conditionalPanel( ### UPSET CHART
                              condition = "input.missingValuesTabset == 'Upset Chart'",
                              sliderInput("upset_nintersects", "Number of Intersections", 
                                          min = 1, max = 50, value = 10),
@@ -82,7 +82,7 @@ ui <- fluidPage(
                                          min = 1, max = 20, value = 5),
                              checkboxInput("upset_order_by", "Order by Intersection Size", value = TRUE)
                          ),
-                         conditionalPanel(
+                         conditionalPanel( ### RISING-VALUE
                              condition = "input.missingValuesTabset == 'Rising-Value Chart'",
                              #selectInput("facet_by", "Facet by: (TODO)", choices = NULL, multiple = FALSE),
                              sliderInput("rising_value_percent", "Select Percentage of Variables:", 
@@ -118,7 +118,18 @@ ui <- fluidPage(
                     sidebarPanel(
                         conditionalPanel(
                             condition = "input.similaritiesTabset == 'Corrgram'",
-                            checkboxInput(inputId = "corr_abs", label = "Uses absolute correlation", value = TRUE),
+                            sliderInput("corrgram_percent", "Select Percentage of Variables:", 
+                                        min = 0, max = 100, value = 20, step = 10),
+                            div(style = "max-height: 400px; overflow-y: auto; column-count: 3; column-gap: 20px;",
+                                checkboxGroupInput("corrgram_vars", "Select Variables:", 
+                                                   choices = NULL,
+                                                   selected = NULL)
+                            ),
+                            actionButton("select_all_corrgram", "Select All"),
+                            actionButton("deselect_all_corrgram", "Deselect All"),
+                            tags$div(style = "margin-top: 15px;",
+                                     checkboxInput(inputId = "corr_abs", label = "Uses absolute correlation", value = TRUE)
+                            ),
                             selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
                             selectInput(inputId = "corr_group_method", label = "Grouping method", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
                             ),
@@ -168,11 +179,29 @@ ui <- fluidPage(
                  
                  sidebarLayout(
                      sidebarPanel(
-                         actionButton("TEST4", "placeholder TEST4")
+                         conditionalPanel(
+                             condition = "input.relationshipsTabset == 'Time Series Plot'",
+                             checkboxInput(inputId = "corr_abs", label = "AAAA", value = TRUE),
+                             selectInput(inputId = "corr_method", label = "ASDADDD", choices = c("pearson","spearman","kendall"), selected = "pearson"),
+                             selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                         ),
+                         conditionalPanel(
+                             condition = "input.relationshipsTabset == 'Pair Plot'",
+                             checkboxInput(inputId = "corr_abs", label = "PLACEHOLDER", value = TRUE),
+                             selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
+                             selectInput(inputId = "corr_group_method", label = "PLACEHOLDERA", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                         ),
+                         conditionalPanel(
+                             condition = "input.relationshipsTabset == 'Mosaic Plot'",
+                             checkboxInput(inputId = "corr_abs", label = "AAAA", value = TRUE),
+                             selectInput(inputId = "corr_method", label = "PLACEHOLDER", choices = c("pearson","spearman","kendall"), selected = "pearson"),
+                             selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                         ),
                      ),
+                     
                      mainPanel(
-                         tabsetPanel(
-                             tabPanel("Scatter Plot"),
+                         tabsetPanel(id = "relationshipsTabset",
+                             tabPanel("Time Series Plot"),
                              tabPanel("Pair Plot"),
                              tabPanel("Mosaic Plot"),
                          )

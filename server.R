@@ -142,7 +142,7 @@ server <- function(input, output, session) {
       # Dynamic Title
       vis_miss_title <- reactive({
         sorting <- if(input$vis_miss_sort) "Sorted by Missing" else "Unsorted"
-        clustering <- if(input$vis_miss_cluster) "Clustered by Missing" else "Unclustered"
+        clustering <- if(input$vis_miss_cluster) "Clustered" else "Unclustered"
         
         paste0("Vis-Miss Plot (", 
                sorting, ", ", 
@@ -305,16 +305,63 @@ server <- function(input, output, session) {
     
 ### SIMILARITIES ###
     
-    ### --- Corrgram
-    output$corrgram_plot <- renderPlot({
+    ### -- CORRGRAM
+    
+    selected_corrgram_data <- reactive({
+      req(data(), input$corrgram_vars)
+      data()[, input$corrgram_vars, drop = FALSE]
+    })
+    
+    # Initialize selected variables based on default percentage
+    observe({
       req(data())
-      data <- data()[, sapply(data(), function(col) is.numeric(col))] # select numeric
-      corrgram(data, 
-                 order = input$corr_group_method, 
-                 abs = input$corr_abs, 
-                 cor.method = input$corr_method,
-                 #text.panel = panel.txt,
-                 main = "Corrgram")
+      numeric_cols <- names(data()[, sapply(data(), is.numeric), drop = FALSE])
+      updateCheckboxGroupInput(session, "corrgram_vars", 
+                               choices = numeric_cols,
+                               selected = character(0))  # Start with none selected
+    })
+    
+    # React to both initial load and subsequent changes of the percentage slider
+    observeEvent(list(data(), input$corrgram_percent), {
+      req(data())
+      numeric_cols <- names(data()[, sapply(data(), is.numeric), drop = FALSE])
+      num_to_select <- ceiling(length(numeric_cols) * input$corrgram_percent / 100)
+      selected_cols <- numeric_cols[1:num_to_select]
+      updateCheckboxGroupInput(session, "corrgram_vars", 
+                               selected = selected_cols)
+    }, ignoreInit = FALSE)  # This ensures it runs on initialization
+    
+    # Render Corrgram
+    output$corrgram_plot <- renderPlot({
+      req(selected_corrgram_data())
+      
+      # Dynamic Title
+      corrgram_title <- paste0(
+        "Corrgram (",
+        if(input$corr_abs) "Absolute Correlation Enabled, " else "Absolute Correlation Disabled, ",
+        "Method: ", input$corr_method, ", ",
+        "Grouping: ", if(input$corr_group_method == FALSE) "None" else input$corr_group_method,
+        ")"
+      )
+      
+      corrgram(selected_corrgram_data(), 
+               order = input$corr_group_method, 
+               abs = input$corr_abs, 
+               cor.method = input$corr_method,
+               main = corrgram_title)
+    })
+    
+    # Select All button functionality
+    observeEvent(input$select_all_corrgram, {
+      numeric_cols <- names(data()[, sapply(data(), is.numeric), drop = FALSE])
+      updateCheckboxGroupInput(session, "corrgram_vars", 
+                               selected = numeric_cols)
+    })
+    
+    # Deselect All button functionality
+    observeEvent(input$deselect_all_corrgram, {
+      updateCheckboxGroupInput(session, "corrgram_vars", 
+                               selected = character(0))
     })
     
     ### --- Hierarchy_Chart
