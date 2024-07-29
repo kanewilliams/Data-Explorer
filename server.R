@@ -139,17 +139,30 @@ server <- function(input, output, session) {
                              "second_half" = data() %>% select((floor(ncol(.)/2) + 1):ncol(.))
       )
       
+      # Dynamic Title
+      vis_miss_title <- reactive({
+        sorting <- if(input$vis_miss_sort) "Sorted by Missing" else "Unsorted"
+        clustering <- if(input$vis_miss_cluster) "Clustered by Missing" else "Unclustered"
+        
+        paste0("Vis-Miss Plot (", 
+               sorting, ", ", 
+               clustering, ")")
+      })
+      
       vis_miss(data_to_plot, 
                sort_miss = input$vis_miss_sort, 
                cluster = input$vis_miss_cluster) +
         
-        # Make axes labels larger
+        ggtitle(vis_miss_title()) +
+        
         theme(
           axis.text.x = element_text(size = 12, angle = 90, hjust = 1, vjust = 0.5),
           axis.text.y = element_text(size = 12),
           #axis.title.x = element_text(size = 14),
           axis.title.y = element_text(size = 14),
-          #plot.title = element_text(size = 16)
+          plot.title = element_text(size = 25, face = "bold", hjust = 0.5, vjust=-2,
+                                    margin = margin(b = 20)),
+          plot.title.position = "plot"
         )
     })
     
