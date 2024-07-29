@@ -21,6 +21,10 @@ library(UpSetR) # Upset chart
 ### SIMILARITIES
 library(corrgram) # Corrgram Plot
 
+### DISTRIBUTIONS
+library(car) # Boxplot
+library(RColorBrewer) # for Boxplot for some reason
+
 library(thematic) # for plot colours
 library(ragg) # for fonts
 library(bslib) # for themes.

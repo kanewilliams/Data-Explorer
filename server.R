@@ -345,7 +345,7 @@ server <- function(input, output, session) {
       )
       
       num_vars <- ncol(selected_corrgram_data())
-      text_size <- max(0.6, 3 - (num_vars - 5) * 0.05) 
+      text_size <- max(0.6, 3 - (num_vars - 5) * 0.05) # TODO ADJUST TEXT SIZE FOR LARGE VARIABLE COUNT
       
       corrgram(selected_corrgram_data(), 
                order = input$corr_group_method, 
@@ -379,7 +379,42 @@ server <- function(input, output, session) {
     
 ### DISTRIBUTIONS ###
     
+    ### --- Boxplot
     
+    output$boxplot <- renderPlot({
+      req(data())
+      plot_data <- data()
+      
+      # Filter for numeric columns
+      numeric_cols <- sapply(plot_data, is.numeric)
+      plot_data <- plot_data[, numeric_cols, drop = FALSE]
+      plot_data <- switch(input$boxplot_portion,
+                          "all" = plot_data,
+                          "first_half" = plot_data %>% select(1:floor(ncol(.)/2)),
+                          "second_half" = plot_data %>% select((floor(ncol(.)/2) + 1):ncol(.))
+      )
+      
+      plot_data <- scale(plot_data, center = input$boxplot_center, scale = input$boxplot_standardise)
+      
+      n_colors <- ncol(plot_data)
+      color_palette <- colorRampPalette(brewer.pal(min(9, n_colors), "RdBu"))(n_colors)
+      
+      # Create the boxplot
+      car::Boxplot(
+        y = plot_data, 
+        ylab = NA, 
+        use.cols = TRUE, 
+        notch = FALSE, 
+        varwidth = FALSE,  
+        horizontal = FALSE, 
+        outline = input$boxplot_outliers, 
+        col = color_palette,
+        range = input$boxplot_iqr, 
+        main = "Boxplots of Variables", 
+        id = if (input$boxplot_outliers) list(n = 3, location = "avoid") else FALSE
+      )
+    })
+      
 ### RELATIONSHIPS ###
     
     

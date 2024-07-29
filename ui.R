@@ -155,9 +155,14 @@ ui <- fluidPage(
                      sidebarPanel(
                          conditionalPanel(
                              condition = "input.distributionsTabset == 'Box Plot'",
-                             checkboxInput(inputId = "corr_abs", label = "PLACEHOLDER", value = TRUE),
-                             selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
-                             selectInput(inputId = "corr_group_method", label = "Grouping method", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                             selectInput("boxplot_portion", "Display Portion", 
+                                         choices = c("All Data" = "all",
+                                                     "First Half (Columns)" = "first_half",
+                                                     "Second Half (Columns)" = "second_half")),
+                             checkboxInput(inputId = "boxplot_standardise", label = "Standardise Variables", value = FALSE),
+                             checkboxInput(inputId = "boxplot_center", label = "Center Variables", value = TRUE),
+                             checkboxInput(inputId = "boxplot_outliers", label = "Show Outliers", value = TRUE),
+                             sliderInput(inputId = "boxplot_iqr", label = "IQR Multiplier", min = 0, max = 5, step = 0.1, value = 1.5)
                          ),
                          conditionalPanel(
                              condition = "input.distributionsTabset == 'Histogram'",
@@ -169,8 +174,8 @@ ui <- fluidPage(
                          
                      mainPanel(
                          tabsetPanel(id = "distributionsTabset",
-                             tabPanel("Box Plot"),
-                             tabPanel("Histogram"),
+                             tabPanel("Box Plot", withSpinner(plotOutput("boxplot", height = "calc(100vh - 200px)"))),
+                             tabPanel("Histogram", withSpinner(plotOutput("histogram", height = "calc(100vh - 200px)"))),
                          )
                      ),
                  ),
