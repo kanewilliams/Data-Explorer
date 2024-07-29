@@ -84,7 +84,7 @@ ui <- fluidPage(
                          ),
                          conditionalPanel(
                              condition = "input.missingValuesTabset == 'Rising-Value Chart'",
-                             selectInput("facet_by", "Facet by: (TODO)", choices = NULL, multiple = FALSE),
+                             #selectInput("facet_by", "Facet by: (TODO)", choices = NULL, multiple = FALSE),
                              sliderInput("rising_value_percent", "Select Percentage of Variables:", 
                                          min = 0, max = 100, value = 100, step = 10),
                              div(style = "max-height: 400px; overflow-y: auto; column-count: 3; column-gap: 20px;",
@@ -133,7 +133,7 @@ ui <- fluidPage(
                     mainPanel(
                         tabsetPanel(id = "similaritiesTabset",
                             tabPanel("Corrgram", withSpinner(plotOutput("corrgram_plot"))),
-                            tabPanel("Hierarchy Chart", withSpinner(verbatimTextOutput("hierarchy_chart"))),
+                            tabPanel("Hierarchy Chart (Not Implemented)", withSpinner(verbatimTextOutput("hierarchy_chart"))),
                         )
                     ),
                 ),
@@ -142,10 +142,22 @@ ui <- fluidPage(
                  
                  sidebarLayout(
                      sidebarPanel(
-                         actionButton("TEST3", "placeholder TEST3")
+                         conditionalPanel(
+                             condition = "input.distributionsTabset == 'Box Plot'",
+                             checkboxInput(inputId = "corr_abs", label = "PLACEHOLDER", value = TRUE),
+                             selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
+                             selectInput(inputId = "corr_group_method", label = "Grouping method", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                         ),
+                         conditionalPanel(
+                             condition = "input.distributionsTabset == 'Histogram'",
+                             checkboxInput(inputId = "corr_abs", label = "AAAA", value = TRUE),
+                             selectInput(inputId = "corr_method", label = "PLACEHOLDER", choices = c("pearson","spearman","kendall"), selected = "pearson"),
+                             selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                         ),
                      ),
+                         
                      mainPanel(
-                         tabsetPanel(
+                         tabsetPanel(id = "distributionsTabset",
                              tabPanel("Box Plot"),
                              tabPanel("Histogram"),
                          )

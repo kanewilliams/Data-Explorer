@@ -209,9 +209,23 @@ server <- function(input, output, session) {
       
       data_filtered <- data[, input$rising_value_vars, drop = FALSE] # choose columns by rising_value_var
       
+      # Dynamic Title
+      rising_value_title <- paste0("Rising Value Chart (", 
+                                   if(input$rising_value_center && input$rising_value_scale) {
+                                     "Centered, Scaled"
+                                   } else if(input$rising_value_center) {
+                                     "Centered, Not Scaled"
+                                   } else if(input$rising_value_scale) {
+                                     "Not Centered, Scaled"
+                                   } else {
+                                     "Not Centered, Not Scaled"
+                                   },
+                                   ")")
+      
       data <- scale(x = data_filtered, center = input$rising_value_center, scale = input$rising_value_scale)
       mypalette <- rainbow(ncol(data))
-      matplot(x = seq(1, 100, length.out = nrow(data)), y = data, type = "l", xlab = "Percentile (%)", ylab = "Standardised Values", lty = 1, lwd = 1, col = mypalette, main = "Rising value chart")
+      matplot(x = seq(1, 100, length.out = nrow(data)), y = data, type = "l", xlab = "Percentile (%)", ylab = "Standardised Values", lty = 1,
+              lwd = 1, col = mypalette, main = rising_value_title)
       legend(legend = colnames(data), x = "topleft", y = "top", lty = 1, lwd = 1, col = mypalette, ncol = round(ncol(data)^0.3))
     })
     
