@@ -97,17 +97,17 @@ ui <- fluidPage(
                              actionButton("select_all_rising_value", "Select All"),
                              actionButton("deselect_all_rising_value", "Deselect All"),
                          ),
-                         conditionalPanel(
-                             condition = "input.missingValuesTabset == 'Null Count'",
-                             verbatimTextOutput("description_null_count")
-                         )
+                         # conditionalPanel(
+                         #     condition = "input.missingValuesTabset == 'Null Count'",
+                         #     verbatimTextOutput("description_null_count")
+                         # )
                      ),
                      mainPanel(
                          tabsetPanel(id = "missingValuesTabset",
                              tabPanel("Vis-Miss Plot", withSpinner(plotOutput("vis_miss_plot", height = "calc(100vh - 150px)"))),
                              tabPanel("Upset Chart", withSpinner(plotOutput("upset_chart", height = "calc(100vh - 150px)"))),
                              tabPanel("Rising-Value Chart", withSpinner(plotOutput("rising_value_chart", height = "calc(100vh - 150px)"))),
-                             tabPanel("Null Count", withSpinner(tableOutput("null_count_table"))),
+                             #tabPanel("Null Count", withSpinner(tableOutput("null_count_table"))),
                          )
                      ),
                  ),
@@ -122,7 +122,14 @@ ui <- fluidPage(
                             selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
                             selectInput(inputId = "corr_group_method", label = "Grouping method", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
                             ),
+                        conditionalPanel(
+                            condition = "input.similaritiesTabset == 'HierarchyChart'",
+                            checkboxInput(inputId = "corr_abs", label = "PLACEHOLDER", value = TRUE),
+                            selectInput(inputId = "corr_method", label = "PLACEHOLDER", choices = c("pearson","spearman","kendall"), selected = "pearson"),
+                            selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                        ),
                     ),
+                    
                     mainPanel(
                         tabsetPanel(id = "similaritiesTabset",
                             tabPanel("Corrgram", withSpinner(plotOutput("corrgram_plot"))),
