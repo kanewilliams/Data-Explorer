@@ -11,7 +11,7 @@ ui <- fluidPage(
     HTML("
     <div style='display: flex; justify-content: space-between; align-items: center;'>
         <div>
-            <h2 style='margin: 1;'>Data Explorer<sup>©</sup></h2>
+            <h2 style='margin: 1;'>Data<sup>Explorer</sup></h2>
         </div>
         <h3 style='margin: 1;'>Kane Williams [<i>xxxxx@uclive.ac.nz</i>]</h3>
     </div>
@@ -133,7 +133,7 @@ ui <- fluidPage(
                     mainPanel(
                         tabsetPanel(id = "similaritiesTabset",
                             tabPanel("Corrgram", withSpinner(plotOutput("corrgram_plot"))),
-                            tabPanel("Hierarchy Chart"),
+                            tabPanel("Hierarchy Chart", withSpinner(verbatimTextOutput("hierarchy_chart"))),
                         )
                     ),
                 ),

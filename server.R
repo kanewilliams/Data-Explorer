@@ -172,16 +172,26 @@ server <- function(input, output, session) {
                  text(0.5, 0.5, "Not enough variables with missing values for an UpSet plot"))
       }
       
-      upset(fromList(missing_sets), 
-            nsets = min(input$upset_nsets, length(missing_sets)),
-            nintersects = input$upset_nintersects,
-            order.by = if(input$upset_order_by) "freq" else "degree",
-            main.bar.color = "darkblue",
-            sets.bar.color = "darkred",
-            matrix.color = "black",
-            shade.color = "lightgray")
-    })
+      # Dynamic Title
+      title <- paste0("UpSet Plot of Missing Values",
+                      if(input$upset_order_by) "- Ordered by Intersection Size")
     
+    # Create the UpSet plot
+    upset(fromList(missing_sets), 
+          nsets = min(input$upset_nsets, length(missing_sets)),
+          nintersects = input$upset_nintersects,
+          order.by = if(input$upset_order_by) "freq" else "degree",
+          text.scale = c(2.0), # Increase text size
+          main.bar.color = "darkblue",
+          sets.bar.color = "darkred",
+          matrix.color = "black",
+          shade.color = "lightgray"
+    )
+    
+    # TODO ADD TITLE, HOW??
+    
+  })
+
     ### -- Rising Value Chart
     # NOTE: Works only on CONTINUOUS features
     
@@ -280,10 +290,9 @@ server <- function(input, output, session) {
                  main = "Corrgram")
     })
     
-    ### --- Hiearchy_Chart
-    output$hierarchy_chart <- renderPlot({
-      req(data())
-      # TODO
+    ### --- Hierarchy_Chart
+    output$hierarchy_chart <- renderText({
+      "Not yet implemented. Come back later."
     })
     
     
@@ -396,14 +405,13 @@ server <- function(input, output, session) {
                  ),
                  div(class = "content-section",
                      h3("Acknowledgements"),
-                     p("Special thanks to the University of Canterbury and the DATA423 course instructors for their guidance and support."),
+                     p("Special thanks to the University of Canterbury and the DATA423 course instructors"),
                      p("Some code (particularly for the visualisations) was modified from code provided in the course. (Authors: Nick Ward, Phil Davies, Nicki Cartlidge)")
                  ),
                  div(class = "content-section",
                      h3("Technologies Used"),
                      tags$ul(
-                       tags$li("R"),
-                       tags$li("Shiny"),
+                       tags$li("R + RShiny"),
                        tags$li("Various R packages (e.g. thematic, ragg, DT, ggplot2, dplyr)")
                      )
                  )
