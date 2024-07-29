@@ -159,7 +159,7 @@ ui <- fluidPage(
                                          choices = c("All Data" = "all",
                                                      "First Half (Columns)" = "first_half",
                                                      "Second Half (Columns)" = "second_half")),
-                             checkboxInput(inputId = "boxplot_standardise", label = "Standardise Variables", value = FALSE),
+                             checkboxInput(inputId = "boxplot_scale", label = "Scale Variables", value = FALSE),
                              checkboxInput(inputId = "boxplot_center", label = "Center Variables", value = TRUE),
                              checkboxInput(inputId = "boxplot_outliers", label = "Show Outliers", value = TRUE),
                              sliderInput(inputId = "boxplot_iqr", label = "IQR Multiplier", min = 0, max = 5, step = 0.1, value = 1.5)

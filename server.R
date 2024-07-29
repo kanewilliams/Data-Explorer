@@ -394,10 +394,25 @@ server <- function(input, output, session) {
                           "second_half" = plot_data %>% select((floor(ncol(.)/2) + 1):ncol(.))
       )
       
-      plot_data <- scale(plot_data, center = input$boxplot_center, scale = input$boxplot_standardise)
+      plot_data <- scale(plot_data, center = input$boxplot_center, scale = input$boxplot_scale)
       
       n_colors <- ncol(plot_data)
       color_palette <- colorRampPalette(brewer.pal(min(9, n_colors), "RdBu"))(n_colors)
+      
+      # Dynamic Title
+      boxplot_title <- paste0("Boxplot (", 
+                                   if(input$boxplot_center && input$boxplot_scale) {
+                                     "Centered, Scaled"
+                                   } else if(input$boxplot_center) {
+                                     "Centered, Not Scaled"
+                                   } else if(input$boxplot_scale) {
+                                     "Not Centered, Scaled"
+                                   } else {
+                                     "Not Centered, Not Scaled"
+                                   },
+                                   if (input$boxplot_outliers) {
+                                     paste0(", IQR Multiplier:", input$boxplot_iqr) 
+                                   }," )")
       
       # Create the boxplot
       car::Boxplot(
@@ -410,7 +425,7 @@ server <- function(input, output, session) {
         outline = input$boxplot_outliers, 
         col = color_palette,
         range = input$boxplot_iqr, 
-        main = "Boxplots of Variables", 
+        main = boxplot_title, 
         id = if (input$boxplot_outliers) list(n = 3, location = "avoid") else FALSE
       )
     })
