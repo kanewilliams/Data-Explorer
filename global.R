@@ -9,6 +9,7 @@ library(ggplot2)
 #library(plotly) # Interactivity
 library(shinycssloaders) # spinner
 # library(grid) # titles
+library(gridExtra) # Autoplot
 
 ### QUICK VIEW ###
 library(DT) # Data Tables

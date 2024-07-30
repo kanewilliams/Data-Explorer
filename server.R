@@ -441,7 +441,6 @@ server <- function(input, output, session) {
     
     ### --- Time Series Plot
     
-    # Function to get numeric columns
     get_numeric_cols <- function(data) {
       return(names(data)[sapply(data, is.numeric)])
     }
@@ -469,26 +468,71 @@ server <- function(input, output, session) {
                         selected = datetime_cols[1])
     })
     
-    # Generate Time Series Plot
+    # Reactive value to store current plot state
+    current_plot <- reactiveVal("single")
+    
     output$timeseries_plot <- renderPlot({
       req(input$relationshipsTabset == "Time Series Plot")
-      req(data(), input$ts_dependent_var, input$ts_datetime_var)
+      req(data(), input$ts_datetime_var)
       
       plot_data <- data()
+      datetime_var <- input$ts_datetime_var
       
-      # Ensure the selected variables exist in the data
-      req(input$ts_dependent_var %in% names(plot_data),
-          input$ts_datetime_var %in% names(plot_data))
-      
-      # Create the plot
-      ggplot(plot_data, aes_string(x = input$ts_datetime_var, y = input$ts_dependent_var)) +
-        geom_line() +
-        geom_point() +
-        theme_minimal() +
-        labs(title = paste("Time Series Plot:", input$ts_dependent_var, "over time"),
-             x = "Time",
-             y = input$ts_dependent_var) +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+      if (current_plot() == "single") {
+        req(input$ts_dependent_var)
+        # Ensure the selected variables exist in the data
+        req(input$ts_dependent_var %in% names(plot_data),
+            datetime_var %in% names(plot_data))
+        
+        # Create the single variable plot
+        ggplot(plot_data, aes_string(x = datetime_var, y = input$ts_dependent_var)) +
+          geom_line() +
+          theme_minimal(base_size = 14) +  # Increase base font size
+          labs(title = paste("Time Series Plot:", input$ts_dependent_var, "over time"),
+               x = "Time",
+               y = "Value") +
+          theme(
+            plot.title = element_text(size = 20, face = "bold", hjust = 0.5),  # Larger, centered title
+            axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+            axis.text.y = element_text(size = 12),
+            axis.title = element_text(size = 14, face = "bold")
+          )
+      } else {
+        # MultiPlot: Create a plot with all numeric variables on the same axis
+        numeric_cols <- get_numeric_cols(plot_data)
+        
+        # Melt the data for ggplot
+        library(reshape2)
+        melted_data <- melt(plot_data, id.vars = datetime_var, measure.vars = numeric_cols)
+        
+        # Create the multi-line plot
+        ggplot(melted_data, aes_string(x = datetime_var, y = "value", color = "variable")) +
+          geom_line() +
+          theme_minimal(base_size = 14) +  # Increase base font size
+          labs(title = "Time Series Plot: All Numeric Variables",
+               x = "Time",
+               y = "Value") +
+          theme(
+            plot.title = element_text(size = 24, face = "bold", hjust = 0.5),  # Larger, centered title
+            axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+            axis.text.y = element_text(size = 12),
+            axis.title = element_text(size = 16, face = "bold"),
+            legend.title = element_text(size = 14, face = "bold"),
+            legend.text = element_text(size = 12),
+            legend.position = "right"
+          ) +
+          scale_color_discrete(name = "Variables")
+      }
+    }, height = 600, width = 800)  # Increase plot size
+    
+    # Observer for AutoPlot button
+    observeEvent(input$autoplot_ts, {
+      current_plot("auto")
+    })
+    
+    # Observer for Reset button
+    observeEvent(input$reset_ts, {
+      current_plot("single")
     })
     
     ### --- Pairs Plot

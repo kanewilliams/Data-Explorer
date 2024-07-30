@@ -193,10 +193,19 @@ ui <- fluidPage(
                              selectInput(inputId = "ts_datetime_var", 
                                          label = "Choose DateTime Variable", 
                                          choices = NULL),
+                             tags$hr(),
+                             actionButton(inputId = "autoplot_ts", 
+                                          label = "Plot All Numerical Variables",
+                                          class = "btn-primary"),
+                             actionButton(inputId = "reset_ts", 
+                                          label = "Reset to Single Plot",
+                                          class = "btn-secondary",
+                                          style = "margin-left: 10px;"),
                              tags$p(tags$strong("Note:", style = "color: blue;"), 
-                                    "The plot will update automatically when you change the selected variables.",
-                                    style = "margin-top: 10px; font-style: italic;")
+                                    "Plotting all variables may take a moment for large datasets.",
+                                    style = "margin-top: 5px; font-style: italic;")
                          ),
+                         
                          conditionalPanel(
                              condition = "input.relationshipsTabset == 'Pairs Plot'",
                              actionButton(inputId = "pairs_generate", label = "Generate Pairs Plot"),
@@ -212,6 +221,7 @@ ui <- fluidPage(
                              actionButton(inputId = "select_all_pairs", label = "Select All"),
                              actionButton(inputId = "deselect_all_pairs", label = "Deselect All"),
                          ),
+                         
                          conditionalPanel(
                              condition = "input.relationshipsTabset == 'Mosaic Plot'",
                              selectizeInput(inputId = "mosaic_variables", 
