@@ -441,6 +441,56 @@ server <- function(input, output, session) {
     
     ### --- Time Series Plot
     
+    # Function to get numeric columns
+    get_numeric_cols <- function(data) {
+      return(names(data)[sapply(data, is.numeric)])
+    }
+    
+    # Function to get DateTime columns
+    get_datetime_cols <- function(data) {
+      return(names(data)[sapply(data, function(x) inherits(x, c("POSIXct", "POSIXlt", "Date")))])
+    }
+    
+    # Update choices for dependent variable
+    observe({
+      req(data())
+      numeric_cols <- get_numeric_cols(data())
+      updateSelectInput(session, "ts_dependent_var", 
+                        choices = numeric_cols,
+                        selected = numeric_cols[1])
+    })
+    
+    # Update choices for DateTime variable
+    observe({
+      req(data())
+      datetime_cols <- get_datetime_cols(data())
+      updateSelectInput(session, "ts_datetime_var", 
+                        choices = datetime_cols,
+                        selected = datetime_cols[1])
+    })
+    
+    # Generate Time Series Plot
+    output$timeseries_plot <- renderPlot({
+      req(input$relationshipsTabset == "Time Series Plot")
+      req(data(), input$ts_dependent_var, input$ts_datetime_var)
+      
+      plot_data <- data()
+      
+      # Ensure the selected variables exist in the data
+      req(input$ts_dependent_var %in% names(plot_data),
+          input$ts_datetime_var %in% names(plot_data))
+      
+      # Create the plot
+      ggplot(plot_data, aes_string(x = input$ts_datetime_var, y = input$ts_dependent_var)) +
+        geom_line() +
+        geom_point() +
+        theme_minimal() +
+        labs(title = paste("Time Series Plot:", input$ts_dependent_var, "over time"),
+             x = "Time",
+             y = input$ts_dependent_var) +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    })
+    
     ### --- Pairs Plot
     
     # Filter appropriate columns

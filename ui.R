@@ -187,9 +187,15 @@ ui <- fluidPage(
                      sidebarPanel(
                          conditionalPanel(
                              condition = "input.relationshipsTabset == 'Time Series Plot'",
-                             checkboxInput(inputId = "corr_abs", label = "AAAA", value = TRUE),
-                             selectInput(inputId = "corr_method", label = "ASDADDD", choices = c("pearson","spearman","kendall"), selected = "pearson"),
-                             selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                             selectInput(inputId = "ts_dependent_var", 
+                                         label = "Choose Dependent Variable", 
+                                         choices = NULL),
+                             selectInput(inputId = "ts_datetime_var", 
+                                         label = "Choose DateTime Variable", 
+                                         choices = NULL),
+                             tags$p(tags$strong("Note:", style = "color: blue;"), 
+                                    "The plot will update automatically when you change the selected variables.",
+                                    style = "margin-top: 10px; font-style: italic;")
                          ),
                          conditionalPanel(
                              condition = "input.relationshipsTabset == 'Pairs Plot'",
