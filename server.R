@@ -345,7 +345,7 @@ server <- function(input, output, session) {
       )
       
       num_vars <- ncol(selected_corrgram_data())
-      text_size <- max(0.6, 3 - (num_vars - 5) * 0.05) # TODO ADJUST TEXT SIZE FOR LARGE VARIABLE COUNT
+      text_size <- max(0.6, 3 - (num_vars - 5) * 0.082) # TODO ADJUST TEXT SIZE FOR LARGE VARIABLE COUNT
       
       upper_panel <- if(input$corr_pie) panel.pie else panel.shade
       
