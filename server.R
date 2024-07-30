@@ -443,9 +443,79 @@ server <- function(input, output, session) {
     
     ### --- Pairs Plot
     
+    # Filter appropriate columns
+    filter_columns <- function(data) {
+      filtered_cols <- names(data)[sapply(data, function(col) {
+        !(is.factor(col) && length(levels(col)) > 6)  # Exclude factors with more than 6 levels
+         # !grepl("ID", names(col), ignore.case = TRUE)  # Exclude columns with "ID" in the name
+      })]
+      return(filtered_cols)
+    }
+    
+    # Update checkbox group when data changes
+    observe({
+      req(data())
+      filtered_cols <- filter_columns(data())
+      updateCheckboxGroupInput(session, "pairs_vars", 
+                               choices = filtered_cols,
+                               selected = character(0))  # Initially, no variables are selected
+    })
+    
+    # Select All button functionality
+    observeEvent(input$select_all_pairs, {
+      filtered_cols <- filter_columns(data())
+      updateCheckboxGroupInput(session, "pairs_vars", 
+                               selected = filtered_cols)
+    })
+    
+    # Deselect All button functionality
+    observeEvent(input$deselect_all_pairs, {
+      updateCheckboxGroupInput(session, "pairs_vars", 
+                               selected = character(0))
+    })
+    
+    # Randomly select 5 variables
+    observeEvent(input$random_select_pairs, {
+      req(data())
+      filtered_cols <- filter_columns(data())
+      if(length(filtered_cols) > 5) {
+        selected_cols <- sample(filtered_cols, 5)
+      } else {
+        selected_cols <- filtered_cols
+      }
+      updateCheckboxGroupInput(session, "pairs_vars", 
+                               selected = selected_cols)
+    })
+    
+    output$pairs_plot <- renderPlot({
+      # Only execute when the button is clicked
+      req(input$pairs_generate)
+      
+      # Isolate the data retrieval to prevent unnecessary reactivity
+      isolate({
+        req(data())
+        data <- data()
+        
+        # Check if any variables are selected
+        req(length(input$pairs_vars) > 0, cancelOutput = TRUE)
+        
+        # Filter the data based on selected variables
+        data_filtered <- data[, input$pairs_vars, drop = FALSE]
+        
+        tryCatch({
+          GGally::ggpairs(data = data_filtered, title = "Pairs plot")
+        }, error = function(e) {
+          # Return a blank plot with an error message
+          ggplot() + 
+            annotate("text", x = 0.5, y = 0.5, label = paste("Error:", e$message)) +
+            theme_void()
+        })
+      })
+    })
+    
     ### --- Mosaic Plot
     
-    # Function to get suitable categorical variables
+    # Get suitable categorical variables
     get_suitable_vars <- function(data) {
       categorial_vars <- names(data)[sapply(data, function(x) is.factor(x) | is.character(x))]
       suitable_vars <- categorial_vars[sapply(data[categorial_vars], function(x) length(unique(x)) <= 10)]

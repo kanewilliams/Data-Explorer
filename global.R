@@ -27,6 +27,7 @@ library(RColorBrewer) # for Boxplot for some reason
 
 ### RELATIONSHIPS
 library(vcd) # Mosaic
+library(GGally) # Pairs Plot
 
 library(thematic) # for plot colours
 library(ragg) # for fonts

@@ -125,7 +125,7 @@ ui <- fluidPage(
                                                    choices = NULL,
                                                    selected = NULL)
                             ),
-                            actionButton("select_all_corrgram", "Select All"),s
+                            actionButton("select_all_corrgram", "Select All"),
                             actionButton("deselect_all_corrgram", "Deselect All"),
                             tags$div(style = "margin-top: 15px;",
                                      checkboxInput(inputId = "corr_abs", label = "Use Absolute Correlation", value = TRUE)
@@ -193,9 +193,18 @@ ui <- fluidPage(
                          ),
                          conditionalPanel(
                              condition = "input.relationshipsTabset == 'Pairs Plot'",
-                             checkboxInput(inputId = "corr_abs", label = "PLACEHOLDER", value = TRUE),
-                             selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
-                             selectInput(inputId = "corr_group_method", label = "PLACEHOLDERA", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                             actionButton(inputId = "pairs_generate", label = "Generate Pairs Plot"),
+                             tags$p(tags$strong("Warning:", style = "color: orange;"), "May take a while to Generate.", 
+                                    style = "margin-top: 10px; margin-bottom: 5px;"),
+                             tags$hr(style = "margin-top: 15px; margin-bottom: 15px;"),
+                             actionButton(inputId = "random_select_pairs", label = "Randomly select 5"),
+                             div(style = "max-height: 400px; overflow-y: auto; column-count: 3; column-gap: 20px;",
+                                 checkboxGroupInput("pairs_vars", "Select Variables:", 
+                                                    choices = NULL,
+                                                    selected = NULL)
+                             ),
+                             actionButton(inputId = "select_all_pairs", label = "Select All"),
+                             actionButton(inputId = "deselect_all_pairs", label = "Deselect All"),
                          ),
                          conditionalPanel(
                              condition = "input.relationshipsTabset == 'Mosaic Plot'",
