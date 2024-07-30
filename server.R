@@ -347,6 +347,8 @@ server <- function(input, output, session) {
       num_vars <- ncol(selected_corrgram_data())
       text_size <- max(0.6, 3 - (num_vars - 5) * 0.05) # TODO ADJUST TEXT SIZE FOR LARGE VARIABLE COUNT
       
+      upper_panel <- if(input$corr_pie) panel.pie else panel.shade
+      
       corrgram(selected_corrgram_data(), 
                order = input$corr_group_method, 
                abs = input$corr_abs, 
@@ -354,7 +356,7 @@ server <- function(input, output, session) {
                main = corrgram_title,
                cex.labels = text_size,
                lower.panel = panel.shade,
-               #upper.panel = panel.pie
+               upper.panel = upper_panel
                )
     })
     

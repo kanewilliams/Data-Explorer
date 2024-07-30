@@ -125,11 +125,12 @@ ui <- fluidPage(
                                                    choices = NULL,
                                                    selected = NULL)
                             ),
-                            actionButton("select_all_corrgram", "Select All"),
+                            actionButton("select_all_corrgram", "Select All"),s
                             actionButton("deselect_all_corrgram", "Deselect All"),
                             tags$div(style = "margin-top: 15px;",
-                                     checkboxInput(inputId = "corr_abs", label = "Uses absolute correlation", value = TRUE)
+                                     checkboxInput(inputId = "corr_abs", label = "Use Absolute Correlation", value = TRUE)
                             ),
+                            checkboxInput("corr_pie", "Use Pie Charts in Upper Panel", value = FALSE),
                             selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
                             selectInput(inputId = "corr_group_method", label = "Grouping method", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
                             ),
