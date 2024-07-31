@@ -80,8 +80,11 @@ ui <- fluidPage(
                                          min = 1, max = 50, value = 10),
                              sliderInput("upset_nsets", "Number of Sets", 
                                          min = 1, max = 20, value = 5),
-                             checkboxInput("upset_order_by", "Order by Intersection Size", value = TRUE)
-                         ),
+                             checkboxInput("upset_order_by", "Order by Intersection Size", value = TRUE),
+                             tags$p("TODO: Add Title to this chart. (Surprisingly difficult! As Upset() is not a ggplot() object!)", 
+                                    style = "color: #888; font-style: italic;")                         ),
+                         
+                         
                          conditionalPanel( ### RISING-VALUE
                              condition = "input.missingValuesTabset == 'Rising-Value Chart'",
                              #selectInput("facet_by", "Facet by: (TODO)", choices = NULL, multiple = FALSE),
@@ -117,7 +120,7 @@ ui <- fluidPage(
                 sidebarLayout(
                     sidebarPanel(
                         conditionalPanel(
-                            condition = "input.similaritiesTabset == 'Corrgram'",
+                            condition = "input.similaritiesTabset == 'Corrgram'", ### CORRGRAM
                             sliderInput("corrgram_percent", "Select Percentage of Variables:", 
                                         min = 0, max = 100, value = 20, step = 10),
                             div(style = "max-height: 400px; overflow-y: auto; column-count: 3; column-gap: 20px;",
@@ -137,8 +140,9 @@ ui <- fluidPage(
                             tags$hr(),
                             sliderInput("corrgram_text_size", "Text Size", min = 0.2, max = 3, value = 3, step = 0.2)
                             ),
+                        
                         conditionalPanel(
-                            condition = "input.similaritiesTabset == 'HierarchyChart'",
+                            condition = "input.similaritiesTabset == 'HierarchyChart'", ### HIERARCHY CHART
                             checkboxInput(inputId = "corr_abs", label = "PLACEHOLDER", value = TRUE),
                             selectInput(inputId = "corr_method", label = "PLACEHOLDER", choices = c("pearson","spearman","kendall"), selected = "pearson"),
                             selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
@@ -158,7 +162,7 @@ ui <- fluidPage(
                  sidebarLayout(
                      sidebarPanel(
                          conditionalPanel(
-                             condition = "input.distributionsTabset == 'Box Plot'",
+                             condition = "input.distributionsTabset == 'Box Plot'", ### BOX PLOT
                              selectInput("boxplot_portion", "Display Portion", 
                                          choices = c("All Data" = "all",
                                                      "First Half (Columns)" = "first_half",
@@ -169,7 +173,7 @@ ui <- fluidPage(
                              sliderInput(inputId = "boxplot_iqr", label = "IQR Multiplier", min = 0, max = 5, step = 0.1, value = 1.5)
                          ),
                          conditionalPanel(
-                             condition = "input.distributionsTabset == 'Histogram'",
+                             condition = "input.distributionsTabset == 'Histogram'", ### HISTOGRAM
                              checkboxInput(inputId = "corr_abs", label = "AAAA", value = TRUE),
                              selectInput(inputId = "corr_method", label = "PLACEHOLDER", choices = c("pearson","spearman","kendall"), selected = "pearson"),
                              selectInput(inputId = "corr_group_method", label = "PLACEHOLDER", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
@@ -189,7 +193,7 @@ ui <- fluidPage(
                  sidebarLayout(
                      sidebarPanel(
                          conditionalPanel(
-                             condition = "input.relationshipsTabset == 'Time Series Plot'",
+                             condition = "input.relationshipsTabset == 'Time Series Plot'", ### TIME SERIES
                              selectInput(inputId = "ts_dependent_var", 
                                          label = "Choose Dependent Variable", 
                                          choices = NULL),
@@ -210,7 +214,7 @@ ui <- fluidPage(
                          ),
                          
                          conditionalPanel(
-                             condition = "input.relationshipsTabset == 'Pairs Plot'",
+                             condition = "input.relationshipsTabset == 'Pairs Plot'", ### PAIRS PLOT
                              actionButton(inputId = "pairs_generate", label = "Generate Pairs Plot"),
                              tags$p(tags$strong("Warning:", style = "color: orange;"), "May take a while to Generate.", 
                                     style = "margin-top: 10px; margin-bottom: 5px;"),
@@ -223,10 +227,20 @@ ui <- fluidPage(
                              ),
                              actionButton(inputId = "select_all_pairs", label = "Select All"),
                              actionButton(inputId = "deselect_all_pairs", label = "Deselect All"),
+                             tags$hr(style = "margin-top: 15px; margin-bottom: 15px;"),
+                             selectInput(inputId = "pairs_colour_by", 
+                                         label = "Colour by:", 
+                                         choices = NULL),
+                             sliderInput(inputId = "pairs_text_size", 
+                                         label = "Outer Text Size:", 
+                                         min = 6, max = 20, value = 14, step = 1),
+                             sliderInput(inputId = "pairs_inner_text_size", 
+                                         label = "Inner Text Size:", 
+                                         min = 0.5, max = 10, value = 6, step = 0.5)
                          ),
                          
                          conditionalPanel(
-                             condition = "input.relationshipsTabset == 'Mosaic Plot'",
+                             condition = "input.relationshipsTabset == 'Mosaic Plot'", ### MOSAIC PLOT
                              selectizeInput(inputId = "mosaic_variables", 
                                             label = "Select variables for Mosaic Plot:", 
                                             choices = NULL, 

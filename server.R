@@ -546,6 +546,29 @@ server <- function(input, output, session) {
       return(filtered_cols)
     }
     
+    # Function to get categorical variables
+    get_categorical_vars <- function(data) {
+      cat_vars <- names(data)[sapply(data, function(col) {
+        is.factor(col) || is.character(col) || (is.numeric(col) && length(unique(col)) <= 10)
+      })]
+      return(cat_vars)
+    }
+    
+    # Update checkbox group and color-by select input when data changes
+    observe({
+      req(data())
+      filtered_cols <- filter_columns(data())
+      cat_vars <- get_categorical_vars(data())
+      
+      updateCheckboxGroupInput(session, "pairs_vars", 
+                               choices = filtered_cols,
+                               selected = character(0))  # Initially, no variables are selected
+      
+      updateSelectInput(session, "pairs_colour_by",
+                        choices = c("None" = "", cat_vars),
+                        selected = "")
+    })
+    
     # Update checkbox group when data changes
     observe({
       req(data())
@@ -597,11 +620,54 @@ server <- function(input, output, session) {
         data_filtered <- data[, input$pairs_vars, drop = FALSE]
         
         tryCatch({
-          GGally::ggpairs(data = data_filtered, title = "Pairs plot")
+          # Create dynamic title
+          plot_title <- if (input$pairs_colour_by != "") {
+            paste0("Pairs Plot (Coloured by ", input$pairs_colour_by, ")")
+          } else {
+            "Pairs Plot"
+          }
+          
+          # Base theme modifications
+          base_theme <- theme(
+            plot.title = element_text(size = input$pairs_text_size * 1.5, face = "bold", hjust = 0.5),  # Center and enlarge title
+            axis.text = element_text(size = input$pairs_text_size),
+            axis.title = element_text(size = input$pairs_text_size),
+            legend.text = element_text(size = input$pairs_text_size),
+            legend.title = element_text(size = input$pairs_text_size),
+            strip.text = element_text(size = input$pairs_text_size)
+          )
+          
+          if (input$pairs_colour_by != "") {
+            # If a color variable is selected, include it in the ggpairs function
+            p <- GGally::ggpairs(
+              data = data,
+              columns = input$pairs_vars,
+              mapping = aes_string(color = input$pairs_colour_by,
+                                   alpha = 0.5),
+              title = plot_title,
+              upper = list(continuous = wrap("cor", size = input$pairs_inner_text_size))
+            ) + 
+              base_theme +
+              theme(legend.position = "bottom")
+          } else {
+            # If no color variable is selected, create the plot without color
+            p <- GGally::ggpairs(
+              data = data_filtered,
+              mapping = aes_string(alpha = 0.5),
+              title = plot_title,
+              upper = list(continuous = wrap("cor", size = input$pairs_inner_text_size))
+            ) +
+              base_theme
+          }
+          
+          # Adjust text size for plot labels
+          p <- p + theme(text = element_text(size = input$pairs_text_size))
+          
+          p
         }, error = function(e) {
           # Return a blank plot with an error message
           ggplot() + 
-            annotate("text", x = 0.5, y = 0.5, label = paste("Error:", e$message)) +
+            annotate("text", x = 0.5, y = 0.5, label = paste("Error:", e$message), size = input$pairs_text_size / 3) +
             theme_void()
         })
       })
