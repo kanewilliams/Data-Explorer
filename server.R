@@ -633,12 +633,17 @@ server <- function(input, output, session) {
       tryCatch({
         formula <- as.formula(paste("~", paste(input$mosaic_variables, collapse = " + ")))
         vcd::mosaic(formula, data = data(),
+                    split_vertical = input$mosaic_split_vertical,
+                    #gp=shading_max,
                     main = "Mosaic Plot", 
                     shade = TRUE, 
+                    #gp = shading_max, (Only works with 2 variables???)
+                    #gp_args = list(level = c(0.2, 0.4)), # Adjust levels of shading_max
                     legend = TRUE)
       }, error = function(e) {
         plot.new()
         text(0.5, 0.5, "Unable to create Mosaic Plot with selected variables", cex = 1.2)
+        showNotification(paste("Error:", e$message), type = "error")
       })
     })
     

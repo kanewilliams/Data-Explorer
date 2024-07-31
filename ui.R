@@ -231,7 +231,8 @@ ui <- fluidPage(
                                             label = "Select variables for Mosaic Plot:", 
                                             choices = NULL, 
                                             multiple = TRUE, 
-                                            options = list(maxItems = 4)),
+                                            options = list(maxItems = 5)),
+                             checkboxInput(inputId = "mosaic_split_vertical", label = "Split Vertical", value = FALSE),
                              ),
                      ),
                      
