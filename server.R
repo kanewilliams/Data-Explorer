@@ -428,7 +428,9 @@ server <- function(input, output, session) {
         col = color_palette,
         range = input$boxplot_iqr, 
         main = boxplot_title, 
-        id = if (input$boxplot_outliers) list(n = 3, location = "avoid") else FALSE
+        id = if (input$boxplot_outliers) list(n = 3, location = "avoid") else FALSE,
+        las = 2,  # Rotate x-axis labels vertically
+        cex.axis = 1.15  # Adjust text size if needed
       )
     })
     
