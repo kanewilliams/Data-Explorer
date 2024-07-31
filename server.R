@@ -344,9 +344,7 @@ server <- function(input, output, session) {
         ")"
       )
       
-      num_vars <- ncol(selected_corrgram_data())
-      text_size <- max(0.6, 3 - (num_vars - 5) * 0.082) # TODO ADJUST TEXT SIZE FOR LARGE VARIABLE COUNT
-      
+      text_size <- input$corrgram_text_size
       upper_panel <- if(input$corr_pie) panel.pie else panel.shade
       
       corrgram(selected_corrgram_data(), 
@@ -357,7 +355,7 @@ server <- function(input, output, session) {
                cex.labels = text_size,
                lower.panel = panel.shade,
                upper.panel = upper_panel
-               )
+      )
     })
     
     # Select All button functionality

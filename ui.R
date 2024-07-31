@@ -127,12 +127,15 @@ ui <- fluidPage(
                             ),
                             actionButton("select_all_corrgram", "Select All"),
                             actionButton("deselect_all_corrgram", "Deselect All"),
+                            tags$hr(),
                             tags$div(style = "margin-top: 15px;",
                                      checkboxInput(inputId = "corr_abs", label = "Use Absolute Correlation", value = TRUE)
                             ),
                             checkboxInput("corr_pie", "Use Pie Charts in Upper Panel", value = FALSE),
                             selectInput(inputId = "corr_method", label = "Correlation method", choices = c("pearson","spearman","kendall"), selected = "pearson"),
-                            selectInput(inputId = "corr_group_method", label = "Grouping method", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO")
+                            selectInput(inputId = "corr_group_method", label = "Grouping method", choices = list("none"=FALSE,"OLO"="OLO","GW"="GW","HC"="HC"), selected = "OLO"),
+                            tags$hr(),
+                            sliderInput("corrgram_text_size", "Text Size", min = 0.2, max = 3, value = 3, step = 0.2)
                             ),
                         conditionalPanel(
                             condition = "input.similaritiesTabset == 'HierarchyChart'",
