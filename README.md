@@ -6,7 +6,11 @@ It provides various tools for data visualization, summary statistics, and explor
 
 ## Screenshots
 
-TODO
+![image](https://github.com/user-attachments/assets/fa61e28d-c9d9-41ad-92cc-99c168e2133b)
+
+![image](https://github.com/user-attachments/assets/d68dda36-95e9-4481-bdc3-a887da9a5a0a)
+
+
 
 
 ## Features
