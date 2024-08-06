@@ -1,6 +1,5 @@
 # Kane Williams 2024 
-# Data423-24S2 Assignment 1
-# Contact: (pkw21@uclive.ac.nz)
+# https://github.com/kanewilliams/Data-Explorer
 
 server <- function(input, output, session) {
   

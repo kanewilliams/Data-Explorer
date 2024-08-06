@@ -1,6 +1,5 @@
 # Kane Williams 2024 
-# Data423-24S2 Assignment 1
-# Contact: (pkw21@uclive.ac.nz)
+# https://github.com/kanewilliams/Data-Explorer
 
 ui <- fluidPage(
     
@@ -13,7 +12,7 @@ ui <- fluidPage(
         <div>
             <h2 style='margin: 1;'>Data<sup>Explorer</sup></h2>
         </div>
-        <h3 style='margin: 1;'>Kane Williams [<i>xxxxx@uclive.ac.nz</i>]</h3>
+        <h3 style='margin: 1;'>Kane Williams [<i>xxxxx@yyy.com</i>]</h3>
     </div>
     "),
     
