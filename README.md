@@ -2,7 +2,7 @@
 
 **Data Explorer is a web application designed for quickly exploring CSV datasets, made entirely with R shiny + other R packages.**
 
-It provides various tools for data visualization, summary statistics, and exploratory data analysis, and was inspired by an assignment I had in (DATA423: Data Science in Industry) at the University of Canterbury, New Zealand.
+It provides various tools for data visualization, summary statistics, and exploratory data analysis, and was inspired by a course assignment I had at the University of Canterbury, New Zealand.
 
 ## Screenshots
 
@@ -32,6 +32,7 @@ It provides various tools for data visualization, summary statistics, and explor
 ## Acknowledgements
 
 - Some code (particularly for the visualisations) was modified from code provided in the course. (Authors: N Ward, P Davies, N Cartlidge)
+- Course name and the actual data from the course has been omitted.
 - Packages used: **TODO**
 
 ## Contact
